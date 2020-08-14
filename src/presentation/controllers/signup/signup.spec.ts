@@ -1,4 +1,4 @@
-import { SignUpController } from '.'
+import { SignUpController } from './signup'
 import { ServerError,MissingParamError,InvalidParamError } from '../../errors'
 import { EmailValidator, AddAccount, AddAccountModel, AccountModel } from './signup-protocols'
 

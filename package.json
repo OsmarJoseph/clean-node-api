@@ -7,7 +7,7 @@
     "test": "jest --passWithNoTests --silent --noStackTrace --runInBand",
     "test:verbose": "jest --passWithNoTests --runInBand",
     "test:unit": "yarn test --watch -c jest-unit-config.js",
-    "test:integration": "yarn test --watch -c jest-unit-config.js",
+    "test:integration": "yarn test --watch -c jest-integration-config.js",
     "test:staged": "yarn test --findRelatedTests",
     "test:ci": "yarn test --coverage"
   },
@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/OsmarJoseph/clean-node-api#readme",
   "devDependencies": {
+    "@types/bcrypt": "^3.0.0",
     "@types/jest": "^26.0.9",
     "@types/node": "^14.0.27",
     "@types/validator": "^13.1.0",
@@ -41,6 +42,7 @@
     "typescript": "^3.9.7"
   },
   "dependencies": {
+    "bcrypt": "^5.0.0",
     "validator": "^13.1.1"
   }
 }

@@ -17,7 +17,7 @@ describe('SignUp Routes',() => {
   })
 
   test('Should return an account on success',async () => {
-    await request(app).post('/signup')
+    await request(app).post('/api/signup')
       .send({
         name: 'Osmar',
         email: 'osmar@email.com',

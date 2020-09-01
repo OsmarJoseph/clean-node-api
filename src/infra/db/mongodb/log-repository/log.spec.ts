@@ -24,4 +24,12 @@ describe('Log Mongo Repository', () => {
     const count = await errorCollection.countDocuments()
     expect(count).toBe(1)
   })
+  test('Should return an error log',async () => {
+    const sut = makeSut()
+    const logResult = await sut.logError('any_error')
+    expect(logResult).toBeTruthy()
+    expect(logResult.id).toBeTruthy()
+    expect(logResult.date).toBeTruthy()
+    expect(logResult.errorStack).toBe('any_error')
+  })
 })

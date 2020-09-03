@@ -1,6 +1,6 @@
 import { LogControllerDecorator } from './log'
 import { Controller, HttpRequest, HttpResponse } from '../../presentation/protocols'
-import { serverError, success } from '../../presentation/helpers/http-helper'
+import { serverError, successResponse } from '../../presentation/helpers/http-helper'
 import { LogErrorRepository } from '../../data/protocols/log-error-repository'
 import { LogModel } from '../../domain/models/log'
 
@@ -46,10 +46,8 @@ const makeMockRequest = (): HttpRequest => ({
 })
 
 const makeMockResponse = (): HttpResponse =>
-  success({
-    body: {
-      any_field: 'any_value'
-    }
+  successResponse({
+    any_field: 'any_value'
   })
 
 describe('LogController Decorator', () => {

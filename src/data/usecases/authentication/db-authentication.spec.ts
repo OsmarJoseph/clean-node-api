@@ -2,12 +2,13 @@ import { AccountModel } from '../../../domain/models/account'
 import { LoadAccountByEmailRepository } from '../../protocols/db/load-account-by-email-repository'
 import { DbAuthentication } from './db-authentication'
 import { AuthenticationModel } from '../../../domain/usecases/authentication'
+import { HashComparer } from '../../protocols/criptography/hash-comparer'
 
 const makeMockAccount = (): AccountModel => ({
   id: 'any_id',
   email: 'any_email@mail.com',
   name: 'any_name',
-  password: 'any_password'
+  password: 'hashed_password'
 
 })
 
@@ -25,17 +26,30 @@ const makeLoadAccountByEmailRepository = (): LoadAccountByEmailRepository => {
   return new LoadAccountByEmailRepositoryStub()
 }
 
+const makeHashComparer = (): HashComparer => {
+  class HashComparerStub implements HashComparer {
+    async compare (value: string,hash: string): Promise<boolean> {
+      return true
+    }
+  }
+  return new HashComparerStub()
+}
+
 interface SutTypes {
   loadAccountByEmailRepositoryStub: LoadAccountByEmailRepository
   sut: DbAuthentication
+  hashComparerStub: HashComparer
 }
 
 const makeSut = (): SutTypes => {
   const loadAccountByEmailRepositoryStub = makeLoadAccountByEmailRepository()
-  const sut = new DbAuthentication(loadAccountByEmailRepositoryStub)
+  const hashComparerStub = makeHashComparer()
+
+  const sut = new DbAuthentication(loadAccountByEmailRepositoryStub,hashComparerStub)
   return {
     sut,
-    loadAccountByEmailRepositoryStub
+    loadAccountByEmailRepositoryStub,
+    hashComparerStub
   }
 }
 
@@ -57,5 +71,11 @@ describe('DbAuthentication UseCase',() => {
     jest.spyOn(loadAccountByEmailRepositoryStub,'load').mockReturnValueOnce(null)
     const accessToken = await sut.auth(makeAuthenticationParams())
     expect(accessToken).toBeNull()
+  })
+  test('Should call HashComparer with correct password',async () => {
+    const { sut,hashComparerStub } = makeSut()
+    const compareSpy = jest.spyOn(hashComparerStub,'compare')
+    await sut.auth(makeAuthenticationParams())
+    expect(compareSpy).toHaveBeenCalledWith('any_password','hashed_password')
   })
 })

@@ -24,7 +24,9 @@ export const MongoHelper = {
   },
 
   map: (collection: any): any => {
-    const { _id, ...accountWithoutId } = collection
-    return { ...accountWithoutId,id: _id }
+    if (collection) {
+      const { _id, ...accountWithoutId } = collection
+      return { ...accountWithoutId,id: _id }
+    }
   }
 }

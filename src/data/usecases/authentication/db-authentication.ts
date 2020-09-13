@@ -24,7 +24,7 @@ export class DbAuthentication implements Authentication {
       const isValidPassword = await hashComparer.compare(password,accountPassword)
       if (isValidPassword) {
         const accessToken = await encrypter.encrypt(accountId)
-        await updateAccessTokenRepository.update(accountId,accessToken)
+        await updateAccessTokenRepository.updateAccessToken(accountId,accessToken)
         return accessToken
       }
     }

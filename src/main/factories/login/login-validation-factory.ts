@@ -1,5 +1,5 @@
 import { Validation } from '../../../presentation/protocols/validation'
-import { EmailValidatorAdapter } from '../../../utils/email-validator-adapter'
+import { EmailValidatorAdapter } from '../../adapters/validators/email-validator/email-validator-adapter'
 import { RequiredFiledValidation, EmailValidation, ValidationComposite } from '../../../presentation/helpers/validators'
 
 export const makeLoginValidation = (): Validation => {

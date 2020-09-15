@@ -8,11 +8,14 @@ export class DbAddAccount implements AddAccount {
 
   async add (account: AddAccountModel): Promise<AccountModel> {
     const { password,email } = account
-    await this.loadAccountByEmailRepository.loadByEmail(email)
+    const loadedAccount = await this.loadAccountByEmailRepository.loadByEmail(email)
+    if (loadedAccount) {
+      return null
+    }
     const hashedPassword = await this.hasher.hash(password)
-    const accountModelSaved = await this.addAccountRepository.add(
+    const accountSaved = await this.addAccountRepository.add(
       { ...account,password: hashedPassword }
     )
-    return accountModelSaved
+    return accountSaved
   }
 }

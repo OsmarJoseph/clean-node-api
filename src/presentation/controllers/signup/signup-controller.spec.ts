@@ -1,7 +1,8 @@
 import { SignUpController } from './signup-controller'
 import { AddAccount, AddAccountModel, AccountModel, Validation, Authentication, AuthenticationModel } from './signup-controller-protocols'
 import { HttpRequest } from '../../protocols'
-import { successResponse,badRequest,serverErrorResponse } from '../../helpers/http/http-helper'
+import { successResponse,badRequest,serverErrorResponse, forbidenRequest } from '../../helpers/http/http-helper'
+import { ParamInUseError } from '../../errors/'
 
 const makeAddAccount = (): AddAccount => {
   class AddAccountStub implements AddAccount {
@@ -93,6 +94,12 @@ describe('SignUp Controller', () => {
     const { sut } = makeSut()
     const httpResponse = await sut.handle(makeMockRequest())
     expect(httpResponse).toEqual(successResponse({ accessToken: 'any_token' }))
+  })
+  test('Should return 403 if AddAccount return null', async () => {
+    const { sut,addAccountStub } = makeSut()
+    jest.spyOn(addAccountStub,'add').mockReturnValueOnce(new Promise(resolve => resolve(null)))
+    const httpResponse = await sut.handle(makeMockRequest())
+    expect(httpResponse).toEqual(forbidenRequest(new ParamInUseError('email')))
   })
 
   test('Should call validation with correct value', async () => {

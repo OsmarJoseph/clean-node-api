@@ -24,5 +24,9 @@ export const serverErrorResponse = (error: Error): HttpResponse => ({
 export const successResponse = (data: any): HttpResponse => ({
   statusCode: 200,
   body: data
+})
 
+export const noContentResponse = (): HttpResponse => ({
+  statusCode: 200,
+  body: null
 })

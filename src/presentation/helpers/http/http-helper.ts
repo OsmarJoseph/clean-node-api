@@ -27,6 +27,6 @@ export const successResponse = (data: any): HttpResponse => ({
 })
 
 export const noContentResponse = (): HttpResponse => ({
-  statusCode: 200,
+  statusCode: 204,
   body: null
 })

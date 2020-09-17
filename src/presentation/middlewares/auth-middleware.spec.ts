@@ -1,9 +1,8 @@
 import { forbidenRequest, successResponse, serverErrorResponse } from '../helpers/http/http-helper'
 import { AccessDeniedError } from '../errors'
 import { AuthMiddleware } from './auth-middleware'
-import { HttpRequest } from '../protocols'
-import { LoadAccountByToken } from '../../domain/usecases/load-account-by-token'
-import { AccountModel } from '../../domain/models/account'
+import { HttpRequest, AccountModel, LoadAccountByToken } from './auth-middleware-protocols'
+
 const makeHttpRequest = (): HttpRequest => ({
   headers: {
     'x-access-token': 'any_token'

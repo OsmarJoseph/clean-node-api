@@ -10,10 +10,13 @@ const makeAddParams = (): AddAccountModel => ({
   password: 'any_password'
 })
 let accountCollection: Collection
-const makeMockAccount = async (withAccessToken?: boolean): Promise<AccountModel> => {
+const makeMockAccount = async (withAccessToken?: boolean,withRole?: boolean): Promise<AccountModel> => {
   const newAccount = makeAddParams() as AccountModel
   if (withAccessToken) {
     newAccount.accessToken = 'any_token'
+  }
+  if (withRole) {
+    newAccount.role = 'any_role'
   }
   const opResult = await accountCollection.insertOne(newAccount)
   return MongoHelper.map(opResult.ops[0])
@@ -76,6 +79,16 @@ describe('Account Mongo Repository',() => {
       const sut = makeSut()
       await makeMockAccount(true)
       const account = await sut.loadByToken('any_token')
+      expect(account).toBeTruthy()
+      expect(account.id).toBeTruthy()
+      expect(account.name).toBe('any_name')
+      expect(account.email).toBe('any_email@mail.com')
+      expect(account.password).toBe('any_password')
+    })
+    test('Should return an account on loadByToken with role',async () => {
+      const sut = makeSut()
+      await makeMockAccount(true,true)
+      const account = await sut.loadByToken('any_token','any_role')
       expect(account).toBeTruthy()
       expect(account.id).toBeTruthy()
       expect(account.name).toBe('any_name')

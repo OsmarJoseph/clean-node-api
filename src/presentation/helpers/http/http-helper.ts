@@ -16,7 +16,7 @@ export const unauthorizedRequest = (): HttpResponse => ({
   body: new UnauthorizedError()
 })
 
-export const serverErrorResponse = (error: Error): HttpResponse => ({
+export const serverErrorRequest = (error: Error): HttpResponse => ({
   statusCode: 500,
   body: new ServerError(error.stack)
 })

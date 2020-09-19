@@ -1,4 +1,4 @@
-import { badRequest,serverErrorResponse, okRequest, forbidenRequest } from '../../../helpers/http/http-helper'
+import { badRequest,serverErrorRequest, okRequest, forbidenRequest } from '../../../helpers/http/http-helper'
 import { HttpResponse, HttpRequest,Controller, AddAccount, Validation, Authentication } from './signup-controller-protocols'
 import { ParamInUseError } from '../../../errors'
 
@@ -35,7 +35,7 @@ export class SignUpController implements Controller {
       return okRequest({ accessToken })
     } catch (error) {
       console.error(error)
-      return serverErrorResponse(error)
+      return serverErrorRequest(error)
     }
   }
 }

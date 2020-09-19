@@ -1,5 +1,5 @@
 import { AccessDeniedError } from '../errors'
-import { forbidenRequest, okRequest, serverErrorResponse } from '../helpers/http/http-helper'
+import { forbidenRequest, okRequest, serverErrorRequest } from '../helpers/http/http-helper'
 import { Middleware,HttpRequest,HttpResponse , LoadAccountByToken } from './auth-middleware-protocols'
 
 export class AuthMiddleware implements Middleware {
@@ -20,7 +20,7 @@ export class AuthMiddleware implements Middleware {
       }
       return forbidenRequest(new AccessDeniedError())
     } catch (error) {
-      return serverErrorResponse(error)
+      return serverErrorRequest(error)
     }
   }
 }

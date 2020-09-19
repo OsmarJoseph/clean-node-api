@@ -1,6 +1,6 @@
 import { LoginController } from './login-controller'
 import { HttpRequest, Authentication, Validation } from './login-controller-protocols'
-import { badRequest, serverErrorResponse, unauthorizedRequest, okRequest } from '../../../helpers/http/http-helper'
+import { badRequest, serverErrorRequest, unauthorizedRequest, okRequest } from '../../../helpers/http/http-helper'
 import { AuthenticationModel } from '../../../../domain/usecases/authentication'
 
 const makeAuthentication = (): Authentication => {
@@ -66,7 +66,7 @@ describe('Login Controller',() => {
     const { sut,authenticationStub } = makeSut()
     jest.spyOn(authenticationStub,'auth').mockImplementationOnce(async () => { throw new Error() })
     const httpResponse = await sut.handle(makeMockRequest())
-    expect(httpResponse).toEqual(serverErrorResponse(new Error()))
+    expect(httpResponse).toEqual(serverErrorRequest(new Error()))
   })
   test('Should return 200 if valid credentials are provided',async () => {
     const { sut } = makeSut()

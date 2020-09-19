@@ -1,7 +1,7 @@
 import { SignUpController } from './signup-controller'
 import { AddAccount, AddAccountModel, AccountModel, Validation, Authentication, AuthenticationModel } from './signup-controller-protocols'
 import { HttpRequest } from '../../../protocols'
-import { okRequest,badRequest,serverErrorResponse, forbidenRequest } from '../../../helpers/http/http-helper'
+import { okRequest,badRequest,serverErrorRequest, forbidenRequest } from '../../../helpers/http/http-helper'
 import { ParamInUseError } from '../../../errors/'
 
 const makeAddAccount = (): AddAccount => {
@@ -87,7 +87,7 @@ describe('SignUp Controller', () => {
       throw new Error()
     })
     const httpResponse = await sut.handle(makeMockRequest())
-    expect(httpResponse).toEqual(serverErrorResponse(new Error()))
+    expect(httpResponse).toEqual(serverErrorRequest(new Error()))
   })
 
   test('Should return an accessToken on success', async () => {
@@ -132,6 +132,6 @@ describe('SignUp Controller', () => {
     const { sut,authenticationStub } = makeSut()
     jest.spyOn(authenticationStub,'auth').mockImplementationOnce(async () => { throw new Error() })
     const httpResponse = await sut.handle(makeMockRequest())
-    expect(httpResponse).toEqual(serverErrorResponse(new Error()))
+    expect(httpResponse).toEqual(serverErrorRequest(new Error()))
   })
 })

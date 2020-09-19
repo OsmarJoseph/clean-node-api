@@ -1,6 +1,6 @@
 import { HttpRequest, Validation, AddSurvey, AddSurveyModel } from './add-survey-protocols'
 import { AddSurveyController } from './add-survey-controller'
-import { badRequest, serverErrorResponse,noContentResponse } from '../../../helpers/http/http-helper'
+import { badRequest, serverErrorResponse,noContentRequest } from '../../../helpers/http/http-helper'
 import MockDate from 'mockdate'
 const makeValidation = (): Validation => {
   class ValidationStub implements Validation {
@@ -81,6 +81,6 @@ describe('Add Survey Controller', () => {
   test('Should return 204 on success', async () => {
     const { sut } = makeSut()
     const httpResponse = await sut.handle(makeHttpRquest())
-    expect(httpResponse).toEqual(noContentResponse())
+    expect(httpResponse).toEqual(noContentRequest())
   })
 })

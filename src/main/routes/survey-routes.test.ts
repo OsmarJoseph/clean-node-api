@@ -13,7 +13,8 @@ const makeSurveyData = (): AddSurveyModel => (
     possibleAnswers: [{
       image: 'http://image-online.com',
       answer: 'Answer 1'
-    }]
+    }],
+    date: new Date()
   }
 )
 const makeAccountParams = (): AddAccountModel => ({

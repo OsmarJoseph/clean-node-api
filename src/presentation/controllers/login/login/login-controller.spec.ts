@@ -1,6 +1,6 @@
 import { LoginController } from './login-controller'
 import { HttpRequest, Authentication, Validation } from './login-controller-protocols'
-import { badRequest, serverErrorResponse, unauthorizedRequest, successResponse } from '../../../helpers/http/http-helper'
+import { badRequest, serverErrorResponse, unauthorizedRequest, okRequest } from '../../../helpers/http/http-helper'
 import { AuthenticationModel } from '../../../../domain/usecases/authentication'
 
 const makeAuthentication = (): Authentication => {
@@ -71,7 +71,7 @@ describe('Login Controller',() => {
   test('Should return 200 if valid credentials are provided',async () => {
     const { sut } = makeSut()
     const httpResponse = await sut.handle(makeMockRequest())
-    expect(httpResponse).toEqual(successResponse({ accessToken: 'any_token' }))
+    expect(httpResponse).toEqual(okRequest({ accessToken: 'any_token' }))
   })
   test('Should call validation with correct value', async () => {
     const { sut,validationStub } = makeSut()

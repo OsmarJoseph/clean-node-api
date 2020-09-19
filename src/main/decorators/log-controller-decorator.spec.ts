@@ -1,6 +1,6 @@
 import { LogControllerDecorator } from './log-controller-decorator'
 import { Controller, HttpRequest, HttpResponse } from '../../presentation/protocols'
-import { serverErrorResponse, successResponse } from '../../presentation/helpers/http/http-helper'
+import { serverErrorResponse, okRequest } from '../../presentation/helpers/http/http-helper'
 import { LogErrorRepository } from '../../data/protocols/db/log/log-error-repository'
 import { LogModel } from '../../domain/models/log'
 
@@ -46,7 +46,7 @@ const makeMockRequest = (): HttpRequest => ({
 })
 
 const makeMockResponse = (): HttpResponse =>
-  successResponse({
+  okRequest({
     any_field: 'any_value'
   })
 

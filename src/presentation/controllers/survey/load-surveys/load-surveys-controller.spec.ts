@@ -1,7 +1,7 @@
 import { LoadSurveysController } from './load-surveys-controller'
 import { SurveyModel, LoadSurveys } from './load-surveys-protocols'
 import MockDate from 'mockdate'
-import { successResponse, serverErrorResponse } from '../../../helpers/http/http-helper'
+import { okRequest, serverErrorResponse } from '../../../helpers/http/http-helper'
 const makeMockSurvey = (): SurveyModel => (
   {
     id: 'any_id',
@@ -52,7 +52,7 @@ describe('Load Suveys Controller',() => {
   test('Should return 200 on success', async () => {
     const { sut } = makeSut()
     const httpResponse = await sut.handle({})
-    expect(httpResponse).toEqual(successResponse(makeMockSurveysList()))
+    expect(httpResponse).toEqual(okRequest(makeMockSurveysList()))
   })
   test('Should return 500 if LoadSurveys throws', async () => {
     const { sut,loadSurveysStub } = makeSut()

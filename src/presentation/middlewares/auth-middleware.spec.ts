@@ -1,4 +1,4 @@
-import { forbidenRequest, successResponse, serverErrorResponse } from '../helpers/http/http-helper'
+import { forbidenRequest, okRequest, serverErrorResponse } from '../helpers/http/http-helper'
 import { AccessDeniedError } from '../errors'
 import { AuthMiddleware } from './auth-middleware'
 import { HttpRequest, AccountModel, LoadAccountByToken } from './auth-middleware-protocols'
@@ -58,7 +58,7 @@ describe('Auth Middleware', () => {
   test('Should return 200 if LoadAccountByToken return an account', async () => {
     const { sut } = makeSut()
     const httpResponse = await sut.handle(makeHttpRequest())
-    expect(httpResponse).toEqual(successResponse({ accountId: 'valid_id' }))
+    expect(httpResponse).toEqual(okRequest({ accountId: 'valid_id' }))
   })
   test('Should return 500 if LoadAccountByToken throws', async () => {
     const { sut,loadAccountByTokenStub } = makeSut()

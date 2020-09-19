@@ -1,5 +1,5 @@
 import { Controller, HttpRequest, HttpResponse,Authentication } from './login-controller-protocols'
-import { badRequest, serverErrorResponse, unauthorizedRequest, successResponse } from '../../../helpers/http/http-helper'
+import { badRequest, serverErrorResponse, unauthorizedRequest, okRequest } from '../../../helpers/http/http-helper'
 import { Validation } from '../signup/signup-controller-protocols'
 
 export class LoginController implements Controller {
@@ -21,7 +21,7 @@ export class LoginController implements Controller {
       if (!accessToken) {
         return unauthorizedRequest()
       }
-      return successResponse({ accessToken })
+      return okRequest({ accessToken })
     } catch (error) {
       return serverErrorResponse(error)
     }

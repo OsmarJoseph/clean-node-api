@@ -1,7 +1,7 @@
 import { SignUpController } from './signup-controller'
 import { AddAccount, AddAccountModel, AccountModel, Validation, Authentication, AuthenticationModel } from './signup-controller-protocols'
 import { HttpRequest } from '../../../protocols'
-import { successResponse,badRequest,serverErrorResponse, forbidenRequest } from '../../../helpers/http/http-helper'
+import { okRequest,badRequest,serverErrorResponse, forbidenRequest } from '../../../helpers/http/http-helper'
 import { ParamInUseError } from '../../../errors/'
 
 const makeAddAccount = (): AddAccount => {
@@ -93,7 +93,7 @@ describe('SignUp Controller', () => {
   test('Should return an accessToken on success', async () => {
     const { sut } = makeSut()
     const httpResponse = await sut.handle(makeMockRequest())
-    expect(httpResponse).toEqual(successResponse({ accessToken: 'any_token' }))
+    expect(httpResponse).toEqual(okRequest({ accessToken: 'any_token' }))
   })
   test('Should return 403 if AddAccount return null', async () => {
     const { sut,addAccountStub } = makeSut()

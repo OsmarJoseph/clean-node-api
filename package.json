@@ -15,7 +15,8 @@
     "test:unit": "yarn test --watch -c jest-unit-config.js",
     "test:integration": "yarn test --watch -c jest-integration-config.js",
     "test:staged": "yarn test --findRelatedTests",
-    "test:ci": "yarn test --coverage --no-cache"
+    "test:ci": "yarn test --coverage --no-cache",
+    "test:coveralls": "yarn test:ci && coveralls < coverage/lcov.info"
   },
   "repository": {
     "type": "git",

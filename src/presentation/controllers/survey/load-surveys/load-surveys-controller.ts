@@ -1,11 +1,11 @@
 import { Controller, HttpResponse, HttpRequest, LoadSurveys } from './load-surveys-protocols'
-import { okRequest, serverErrorRequest } from '../../../helpers/http/http-helper'
+import { okRequest, serverErrorRequest, noContentRequest } from '../../../helpers/http/http-helper'
 export class LoadSurveysController implements Controller {
   constructor (private readonly loadSurveys: LoadSurveys) {}
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
       const surveysList = await this.loadSurveys.load()
-      return okRequest(surveysList)
+      return surveysList?.length ? okRequest(surveysList) : noContentRequest()
     } catch (error) {
       return serverErrorRequest(error)
     }

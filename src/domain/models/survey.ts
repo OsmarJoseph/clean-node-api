@@ -6,4 +6,5 @@ export interface SurveyModel{
   id: string
   question: string
   possibleAnswers: SurveyAnswer[]
+  date: Date
 }

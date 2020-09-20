@@ -32,8 +32,11 @@ const makeMockAccount = async (): Promise<AccountModel> => {
 }
 const addValidAccessToAccount = async (account: AccountModel,withRole: boolean): Promise<string> => {
   const accessToken = sign({ id: account.id }, env.jwtSecret)
-  const role = withRole ? 'admin' : ''
-  await accountCollection.updateOne({ _id: account.id },{ $set: { accessToken,role } })
+  if (withRole) {
+    await accountCollection.updateOne({ _id: account.id },{ $set: { accessToken,role: 'admin' } })
+  } else {
+    await accountCollection.updateOne({ _id: account.id },{ $set: { accessToken } })
+  }
 
   return accessToken
 }
@@ -73,6 +76,15 @@ describe('Survey Routes',() => {
           makeSurveyData()
         )
         .expect(204)
+    })
+    test('Should return 403 with valid accessToken and no admin role',async () => {
+      const mockAccount = await makeMockAccount()
+      const usedAccessToken = await addValidAccessToAccount(mockAccount,false)
+      await request(app).post('/api/surveys').set('x-access-token',usedAccessToken)
+        .send(
+          makeSurveyData()
+        )
+        .expect(403)
     })
   })
   describe('GET /surveys',() => {

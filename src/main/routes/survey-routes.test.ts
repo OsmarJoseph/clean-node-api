@@ -107,5 +107,15 @@ describe('Survey Routes',() => {
         .set('x-access-token',usedAccessToken)
         .expect(200)
     })
+    test('Should return 200 on load survey with accessToken and no role with surveys saved',async () => {
+      const mockAccount = await makeMockAccount()
+      const usedAccessToken = await addValidAccessToAccount(mockAccount,false)
+      await insertSurveysOnDatabase()
+      await
+      request(app)
+        .get('/api/surveys')
+        .set('x-access-token',usedAccessToken)
+        .expect(200)
+    })
   })
 })

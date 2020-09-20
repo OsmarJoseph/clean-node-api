@@ -14,6 +14,10 @@ const makeSurveyData = (): AddSurveyModel => (
   }
 )
 
+const insertSurveysOnDatabase = async (): Promise<void> => {
+  await surveyCollection.insertMany([makeSurveyData(),makeSurveyData()])
+}
+
 const makeSut = (): SurveyMongoRepository => new SurveyMongoRepository()
 describe('Survey Mongo Repository',() => {
   beforeAll(async () => {
@@ -28,10 +32,22 @@ describe('Survey Mongo Repository',() => {
     surveyCollection = await MongoHelper.getCollection('surveys')
     await surveyCollection.deleteMany({})
   })
-  test('Should create a survey on success', async () => {
-    const sut = makeSut()
-    await sut.add(makeSurveyData())
-    const savedSurvey = await surveyCollection.findOne({})
-    expect(savedSurvey).toBeTruthy()
+  describe('add',() => {
+    test('Should create a survey on success', async () => {
+      const sut = makeSut()
+      await sut.add(makeSurveyData())
+      const savedSurvey = await surveyCollection.findOne({})
+      expect(savedSurvey).toBeTruthy()
+    })
+  })
+  describe('loadAll',() => {
+    test('Should loadAll surveys on success', async () => {
+      await insertSurveysOnDatabase()
+      const sut = makeSut()
+      const surveysList = await sut.loadAll()
+      expect(surveysList.length).toBe(2)
+      expect(surveysList[0].question).toBe('any_question')
+      expect(surveysList[1].question).toBe('any_question')
+    })
   })
 })

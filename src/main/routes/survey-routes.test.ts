@@ -37,6 +37,11 @@ const addValidAccessToAccount = async (account: AccountModel,withRole: boolean):
 
   return accessToken
 }
+
+const insertSurveysOnDatabase = async (): Promise<void> => {
+  await surveyCollection.insertMany([makeSurveyData(),makeSurveyData()])
+}
+
 describe('Survey Routes',() => {
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL)
@@ -91,6 +96,16 @@ describe('Survey Routes',() => {
         .get('/api/surveys')
         .set('x-access-token',usedAccessToken)
         .expect(204)
+    })
+    test('Should return 200 on load survey with accessToken and admin role with surveys saved',async () => {
+      const mockAccount = await makeMockAccount()
+      const usedAccessToken = await addValidAccessToAccount(mockAccount,true)
+      await insertSurveysOnDatabase()
+      await
+      request(app)
+        .get('/api/surveys')
+        .set('x-access-token',usedAccessToken)
+        .expect(200)
     })
   })
 })

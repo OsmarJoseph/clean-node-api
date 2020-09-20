@@ -74,9 +74,18 @@ describe('Survey Routes',() => {
     test('Should return 403 on load survey without accessToken',async () => {
       await request(app).get('/api/surveys').expect(403)
     })
-    test('Should return 204 on load survey with accessToken and no surveys saved',async () => {
+    test('Should return 204 on load survey with accessToken and admin role no surveys saved',async () => {
       const mockAccount = await makeMockAccount()
       const usedAccessToken = await addValidAccessToAccount(mockAccount,true)
+      await
+      request(app)
+        .get('/api/surveys')
+        .set('x-access-token',usedAccessToken)
+        .expect(204)
+    })
+    test('Should return 204 on load survey with accessToken and no role and no surveys saved',async () => {
+      const mockAccount = await makeMockAccount()
+      const usedAccessToken = await addValidAccessToAccount(mockAccount,false)
       await
       request(app)
         .get('/api/surveys')

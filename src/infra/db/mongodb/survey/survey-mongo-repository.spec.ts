@@ -41,7 +41,12 @@ describe('Survey Mongo Repository',() => {
     })
   })
   describe('loadAll',() => {
-    test('Should loadAll surveys on success', async () => {
+    test('Should load a empty list if db is clean', async () => {
+      const sut = makeSut()
+      const surveysList = await sut.loadAll()
+      expect(surveysList.length).toBe(0)
+    })
+    test('Should load all surveys on success', async () => {
       await insertSurveysOnDatabase()
       const sut = makeSut()
       const surveysList = await sut.loadAll()

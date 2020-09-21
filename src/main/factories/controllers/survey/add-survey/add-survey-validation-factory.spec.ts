@@ -1,7 +1,7 @@
 import { makeAddSurveyValidation } from './add-survey-validation-factory'
-import { Validation } from '../../../../../presentation/protocols/validation'
-import { RequiredFiledValidation, ValidationComposite } from '../../../../../validation/validators'
-jest.mock('../../../../../validation/validators/validation-composite')
+import { Validation } from '@/presentation/protocols/validation'
+import { RequiredFiledValidation, ValidationComposite } from '@/validation/validators'
+jest.mock('@/validation/validators/validation-composite')
 
 const makeRequiredFields = (): string[] => ['question','possibleAnswers']
 

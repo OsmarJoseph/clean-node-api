@@ -1,8 +1,8 @@
 import { Router } from 'express'
-import { makeSignUpController } from '../factories/controllers/login/signup/signup-controller-factory'
-import { adaptRoute } from '../adapters/express/express-route-adapter'
-import { makeLoginControlller } from '../factories/controllers/login/login/login-controller-factory'
-import { makeLogControllerDecorator } from '../factories/decorators/log-controller-decorator-factory'
+import { makeSignUpController } from '@/main/factories/controllers/login/signup/signup-controller-factory'
+import { adaptRoute } from '@/main/adapters/express/express-route-adapter'
+import { makeLoginControlller } from '@/main/factories/controllers/login/login/login-controller-factory'
+import { makeLogControllerDecorator } from '@/main/factories/decorators/log-controller-decorator-factory'
 
 export default (router: Router): void => {
   router.post('/signup', adaptRoute(makeLogControllerDecorator(makeSignUpController())))

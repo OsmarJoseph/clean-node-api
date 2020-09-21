@@ -1,7 +1,7 @@
-import { forbidenRequest, okRequest, serverErrorRequest } from '../helpers/http/http-helper'
-import { AccessDeniedError } from '../errors'
 import { AuthMiddleware } from './auth-middleware'
 import { HttpRequest, AccountModel, LoadAccountByToken } from './auth-middleware-protocols'
+import { forbidenRequest, okRequest, serverErrorRequest } from '@/presentation/helpers/http/http-helper'
+import { AccessDeniedError } from '@/presentation/errors'
 
 const makeHttpRequest = (): HttpRequest => ({
   headers: {

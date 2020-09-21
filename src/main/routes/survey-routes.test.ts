@@ -1,12 +1,12 @@
+import { app } from '@/main/config/app'
+import { env } from '@/main/config/env'
+import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
+import { AddSurveyModel } from '@/domain/usecases/add-survey'
+import { AccountModel } from '@/domain/models/account'
+import { AddAccountModel } from '@/domain/usecases/add-account'
 import request from 'supertest'
-import { app } from '../config/app'
-import { MongoHelper } from '../../infra/db/mongodb/helpers/mongo-helper'
-import { AddSurveyModel } from '../../domain/usecases/add-survey'
-import { AccountModel } from '../../domain/models/account'
-import { AddAccountModel } from '../../domain/usecases/add-account'
 import { Collection } from 'mongodb'
 import { sign } from 'jsonwebtoken'
-import { env } from '../../main/config/env'
 const makeSurveyData = (): AddSurveyModel => (
   {
     question: 'Question 1',

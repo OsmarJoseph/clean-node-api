@@ -1,8 +1,8 @@
 import { makeSignUpValidation } from './signup-validation-factory'
-import { Validation } from '../../../../../presentation/protocols/validation'
-import { EmailValidator } from '../../../../../validation/protocols/email-validator'
-import { RequiredFiledValidation, CompareFieldsValidation, EmailValidation, ValidationComposite } from '../../../../../validation/validators'
-jest.mock('../../../../../validation/validators/validation-composite')
+import { Validation } from '@/presentation/protocols/validation'
+import { EmailValidator } from '@/validation/protocols/email-validator'
+import { RequiredFiledValidation, CompareFieldsValidation, EmailValidation, ValidationComposite } from '@/validation/validators'
+jest.mock('@/validation/validators/validation-composite')
 
 const makeRequiredFields = (): string[] => ['name','email','password','passwordConfirmation']
 

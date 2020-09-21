@@ -12,7 +12,7 @@ const makeSurveyData = (): AddSurveyModel => ({
 }
 )
 
-interface SutTypes{
+type SutTypes = {
   sut: DbAddSurvey
   addSurveyRepository: AddSurveyRepository
 }

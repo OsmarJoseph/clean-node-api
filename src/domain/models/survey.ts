@@ -1,8 +1,8 @@
-export interface SurveyAnswer{
+export type SurveyAnswer = {
   image?: string
   answer: string
 }
-export interface SurveyModel{
+export type SurveyModel = {
   id: string
   question: string
   possibleAnswers: SurveyAnswer[]

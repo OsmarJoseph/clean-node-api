@@ -55,4 +55,11 @@ describe('Survey Mongo Repository',() => {
       expect(surveysList[1].question).toBe('any_question')
     })
   })
+  describe('loadById',() => {
+    test('Should return null if loadById fails', async () => {
+      const sut = makeSut()
+      const survey = await sut.loadById('any_id')
+      expect(survey).toBeFalsy()
+    })
+  })
 })

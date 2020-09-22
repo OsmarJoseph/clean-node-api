@@ -1,4 +1,4 @@
-import { AddSurveyModel } from '@/domain/usecases/add-survey'
+import { AddSurveyModel } from '@/domain/usecases/survey/add-survey'
 import { SurveyMongoRepository } from './survey-mongo-repository'
 import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
 import { getSurveysCollection, SurveysCollection } from '@/infra/db/mongodb/collections'

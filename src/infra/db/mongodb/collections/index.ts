@@ -1,7 +1,7 @@
 import { AddLogModel } from '@/domain/models/log'
-import { AddAccountModel } from '@/domain/usecases/add-account'
-import { AddSurveyModel } from '@/domain/usecases/add-survey'
-import { SaveSurveyResultModel } from '@/domain/usecases/save-survey-result'
+import { AddAccountModel } from '@/domain/usecases/account/add-account'
+import { AddSurveyModel } from '@/domain/usecases/survey/add-survey'
+import { SaveSurveyResultModel } from '@/domain/usecases/survey-result/save-survey-result'
 import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
 import { Collection } from 'mongodb'
 

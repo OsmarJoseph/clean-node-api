@@ -6,11 +6,11 @@ import { AddSurveyModel } from '@/domain/usecases/add-survey'
 import { AddAccountModel } from '@/domain/usecases/add-account'
 import { SaveSurveyResultModel } from '@/domain/usecases/save-survey-result'
 import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
-import { Collection } from 'mongodb'
+import { getAccountsCollection,AccountsCollection, getSurveysCollection, SurveysCollection, getSurveyResultsCollection, SurveyResultsCollection } from '@/infra/db/mongodb/collections'
 
-let surveyCollection: Collection
-let surveyResultCollection: Collection
-let accountCollection: Collection
+let surveyCollection: SurveysCollection
+let surveyResultCollection: SurveyResultsCollection
+let accountCollection: AccountsCollection
 
 const makeSurveyData = (): AddSurveyModel => (
   {
@@ -60,13 +60,13 @@ describe('SurveyResultMongoRespository',() => {
   })
 
   beforeEach(async () => {
-    surveyCollection = await MongoHelper.getCollection('surveys')
+    surveyCollection = await getSurveysCollection()
     await surveyCollection.deleteMany({})
 
-    surveyResultCollection = await MongoHelper.getCollection('surveyResults')
+    surveyResultCollection = await getSurveyResultsCollection()
     await surveyResultCollection.deleteMany({})
 
-    accountCollection = await MongoHelper.getCollection('accounts')
+    accountCollection = await getAccountsCollection()
     await accountCollection.deleteMany({})
   })
   describe('save',() => {

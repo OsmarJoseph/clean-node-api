@@ -1,11 +1,11 @@
-import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
-import { LogErrorRepository } from '@/data/protocols/db/log/log-error-repository'
-import { Collection } from 'mongodb'
 import { LogMongoRepository } from './log-mongo-repository'
+import { LogErrorRepository } from '@/data/protocols/db/log/log-error-repository'
+import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
+import { getErrorCollection, ErrorCollection } from '@/infra/db/mongodb/collections'
 
 const makeSut = (): LogErrorRepository => new LogMongoRepository()
 describe('Log Mongo Repository', () => {
-  let errorCollection: Collection
+  let errorCollection: ErrorCollection
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL)
   })
@@ -15,7 +15,7 @@ describe('Log Mongo Repository', () => {
   })
 
   beforeEach(async () => {
-    errorCollection = await MongoHelper.getCollection('errors')
+    errorCollection = await getErrorCollection()
     await errorCollection.deleteMany({})
   })
   test('Should create an error log on success',async () => {

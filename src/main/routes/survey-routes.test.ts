@@ -1,11 +1,11 @@
 import { app } from '@/main/config/app'
 import { env } from '@/main/config/env'
-import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
 import { AddSurveyModel } from '@/domain/usecases/add-survey'
 import { AccountModel } from '@/domain/models/account'
 import { AddAccountModel } from '@/domain/usecases/add-account'
+import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
+import { getAccountsCollection, AccountsCollection, getSurveysCollection, SurveysCollection } from '@/infra/db/mongodb/collections'
 import request from 'supertest'
-import { Collection } from 'mongodb'
 import { sign } from 'jsonwebtoken'
 const makeSurveyData = (): AddSurveyModel => (
   {
@@ -23,8 +23,8 @@ const makeAccountParams = (): AddAccountModel => ({
   password: 'any_password'
 })
 
-let surveyCollection: Collection
-let accountCollection: Collection
+let surveyCollection: SurveysCollection
+let accountCollection: AccountsCollection
 const makeMockAccount = async (): Promise<AccountModel> => {
   const newAccount = makeAccountParams() as AccountModel
   const opResult = await accountCollection.insertOne(newAccount)
@@ -55,9 +55,9 @@ describe('Survey Routes',() => {
   })
 
   beforeEach(async () => {
-    surveyCollection = await MongoHelper.getCollection('surveys')
+    surveyCollection = await getSurveysCollection()
     await surveyCollection.deleteMany({})
-    accountCollection = await MongoHelper.getCollection('accounts')
+    accountCollection = await getAccountsCollection()
     await accountCollection.deleteMany({})
   })
   describe('POST /surveys',() => {

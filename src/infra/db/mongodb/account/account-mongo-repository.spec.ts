@@ -1,15 +1,15 @@
-import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
 import { AccountMongoRepository } from './account-mongo-repository'
-import { Collection } from 'mongodb'
 import { AddAccountModel } from '@/domain/usecases/add-account'
 import { AccountModel } from '@/domain/models/account'
+import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
+import { getAccountsCollection, AccountsCollection } from '@/infra/db/mongodb/collections'
 const makeSut = (): AccountMongoRepository => new AccountMongoRepository()
 const makeAddParams = (): AddAccountModel => ({
   name: 'any_name',
   email: 'any_email@mail.com',
   password: 'any_password'
 })
-let accountCollection: Collection
+let accountCollection: AccountsCollection
 const makeMockAccount = async (withAccessToken?: boolean,withRole?: boolean): Promise<AccountModel> => {
   const newAccount = makeAddParams() as AccountModel
   if (withAccessToken) {
@@ -31,7 +31,7 @@ describe('Account Mongo Repository',() => {
   })
 
   beforeEach(async () => {
-    accountCollection = await MongoHelper.getCollection('accounts')
+    accountCollection = await getAccountsCollection()
     await accountCollection.deleteMany({})
   })
   describe('add',() => {

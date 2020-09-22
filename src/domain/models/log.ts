@@ -3,3 +3,5 @@ export type LogModel ={
   date: Date
   id: string
 }
+
+export type AddLogModel =Omit<LogModel,'id'>

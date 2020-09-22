@@ -1,8 +1,8 @@
-import { Collection } from 'mongodb'
 import { AddSurveyModel } from '@/domain/usecases/add-survey'
-import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
 import { SurveyMongoRepository } from './survey-mongo-repository'
-let surveyCollection: Collection
+import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
+import { getSurveysCollection, SurveysCollection } from '@/infra/db/mongodb/collections'
+let surveyCollection: SurveysCollection
 const makeSurveyData = (): AddSurveyModel => (
   {
     question: 'any_question',
@@ -16,7 +16,7 @@ const makeSurveyData = (): AddSurveyModel => (
 
 const insertSurveyOnDatabaseAndGetId = async (): Promise<string> => {
   const survey = await surveyCollection.insertOne(makeSurveyData())
-  return survey.ops[0]._id
+  return survey.ops[0]._id as unknown as string
 }
 
 const makeSut = (): SurveyMongoRepository => new SurveyMongoRepository()
@@ -30,7 +30,7 @@ describe('SurveyMongoRepository',() => {
   })
 
   beforeEach(async () => {
-    surveyCollection = await MongoHelper.getCollection('surveys')
+    surveyCollection = await getSurveysCollection()
     await surveyCollection.deleteMany({})
   })
   describe('add',() => {

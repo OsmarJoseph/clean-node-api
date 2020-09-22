@@ -1,10 +1,10 @@
-import request from 'supertest'
 import { app } from '@/main/config/app'
 import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
+import { getAccountsCollection, AccountsCollection } from '@/infra/db/mongodb/collections'
+import request from 'supertest'
 import { hash } from 'bcrypt'
-import { Collection } from 'mongodb'
 
-let accountCollection: Collection
+let accountCollection: AccountsCollection
 describe('Login Routes',() => {
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL)
@@ -15,7 +15,7 @@ describe('Login Routes',() => {
   })
 
   beforeEach(async () => {
-    accountCollection = await MongoHelper.getCollection('accounts')
+    accountCollection = await getAccountsCollection()
     await accountCollection.deleteMany({})
   })
   describe('POST /signup',() => {

@@ -19,7 +19,7 @@ const insertSurveysOnDatabase = async (): Promise<void> => {
 }
 
 const makeSut = (): SurveyMongoRepository => new SurveyMongoRepository()
-describe('Survey Mongo Repository',() => {
+describe('SurveyMongoRepository',() => {
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL)
   })
@@ -53,6 +53,8 @@ describe('Survey Mongo Repository',() => {
       expect(surveysList.length).toBe(2)
       expect(surveysList[0].question).toBe('any_question')
       expect(surveysList[1].question).toBe('any_question')
+      expect(surveysList[0].id).toBeTruthy()
+      expect(surveysList[1].id).toBeTruthy()
     })
   })
   describe('loadById',() => {

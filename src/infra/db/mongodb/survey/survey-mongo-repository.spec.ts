@@ -14,8 +14,9 @@ const makeSurveyData = (): AddSurveyModel => (
   }
 )
 
-const insertSurveysOnDatabase = async (): Promise<void> => {
-  await surveyCollection.insertMany([makeSurveyData(),makeSurveyData()])
+const insertSurveyOnDatabaseAndGetId = async (): Promise<string> => {
+  const survey = await surveyCollection.insertOne(makeSurveyData())
+  return survey.ops[0]._id
 }
 
 const makeSut = (): SurveyMongoRepository => new SurveyMongoRepository()
@@ -47,7 +48,8 @@ describe('SurveyMongoRepository',() => {
       expect(surveysList.length).toBe(0)
     })
     test('Should load all surveys on success', async () => {
-      await insertSurveysOnDatabase()
+      await insertSurveyOnDatabaseAndGetId()
+      await insertSurveyOnDatabaseAndGetId()
       const sut = makeSut()
       const surveysList = await sut.loadAll()
       expect(surveysList.length).toBe(2)
@@ -62,6 +64,13 @@ describe('SurveyMongoRepository',() => {
       const sut = makeSut()
       const survey = await sut.loadById('any_id')
       expect(survey).toBeFalsy()
+    })
+    test('Should return a survey on loadById success', async () => {
+      const usedId = await insertSurveyOnDatabaseAndGetId()
+      const sut = makeSut()
+      const survey = await sut.loadById(usedId)
+      expect(survey).toBeTruthy()
+      expect(survey.id).toBeTruthy()
     })
   })
 })

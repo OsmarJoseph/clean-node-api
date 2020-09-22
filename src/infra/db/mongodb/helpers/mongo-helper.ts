@@ -23,10 +23,14 @@ export const MongoHelper = {
     return await this.client.db().collection(name)
   },
 
-  map: (collection: any): any => {
-    if (collection) {
-      const { _id, ...accountWithoutId } = collection
+  map: (mongoObject: any): any => {
+    if (mongoObject) {
+      const { _id, ...accountWithoutId } = mongoObject
       return { ...accountWithoutId,id: _id }
     }
+  },
+
+  mapArray: (mongoObject: any[]): any => {
+    return mongoObject.map(mongoObject => MongoHelper.map(mongoObject))
   }
 }

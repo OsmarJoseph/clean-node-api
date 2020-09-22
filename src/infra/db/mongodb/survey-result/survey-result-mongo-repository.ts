@@ -21,6 +21,6 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository {
         upsert: true,
         returnOriginal: false
       })
-    return savedSurveyResult.value && MongoHelper.map(savedSurveyResult.value)
+    return MongoHelper.map(savedSurveyResult.value)
   }
 }

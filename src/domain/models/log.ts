@@ -4,4 +4,4 @@ export type LogModel ={
   id: string
 }
 
-export type AddLogModel =Omit<LogModel,'id'>
+export type AddLogParams =Omit<LogModel,'id'>

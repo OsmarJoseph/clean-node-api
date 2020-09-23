@@ -1,6 +1,5 @@
 import { AccountModel } from '@/domain/models/account'
-import { AddAccountParams } from '@/domain/usecases/account/add-account'
-import { AddSurveyParams } from '@/domain/usecases/survey/add-survey'
+import { makeMockAddAccountParams, makeAddSurveyParams } from '@/domain/test'
 import { app } from '@/main/config/app'
 import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
 import { AccountsCollection, getAccountsCollection, SurveysCollection, getSurveysCollection } from '@/infra/db/mongodb/collections'
@@ -8,28 +7,10 @@ import { env } from '@/main/config/env'
 import request from 'supertest'
 import { sign } from 'jsonwebtoken'
 
-const makeSurveyData = (): AddSurveyParams => (
-  {
-    question: 'Question 1',
-    possibleAnswers: [{
-      image: 'http://image-online.com',
-      answer: 'Answer 1'
-    }],
-    date: new Date()
-  }
-)
-
-const makeAccountParams = (): AddAccountParams => ({
-  name: 'any_name',
-  email: 'any_email@mail.com',
-  password: 'any_password'
-})
-
 let accountCollection: AccountsCollection
 let surveyCollection: SurveysCollection
-const makeMockAccount = async (): Promise<AccountModel> => {
-  const newAccount = makeAccountParams() as AccountModel
-  const opResult = await accountCollection.insertOne(newAccount)
+const insertMockAccountOnDatabase = async (): Promise<AccountModel> => {
+  const opResult = await accountCollection.insertOne(makeMockAddAccountParams())
   return MongoHelper.map(opResult.ops[0])
 }
 const addValidAccessToAccount = async (account: AccountModel): Promise<string> => {
@@ -38,8 +19,8 @@ const addValidAccessToAccount = async (account: AccountModel): Promise<string> =
   return accessToken
 }
 
-const insertSurveyOnDatabase = async (): Promise<string> => {
-  const survey = await surveyCollection.insertOne(makeSurveyData())
+const insertMockSurveyOnDatabase = async (): Promise<string> => {
+  const survey = await surveyCollection.insertOne(makeAddSurveyParams())
   return survey.ops[0]._id as unknown as string
 }
 
@@ -69,15 +50,15 @@ describe('Survey Result Routes',() => {
         .expect(403)
     })
     test('Should return 200 on save survey success',async () => {
-      const mockAccount = await makeMockAccount()
+      const mockAccount = await insertMockAccountOnDatabase()
       const usedAccessToken = await addValidAccessToAccount(mockAccount)
-      const surveyId = await insertSurveyOnDatabase()
+      const surveyId = await insertMockSurveyOnDatabase()
 
       await request(app)
         .put(`/api/surveys/${surveyId}/results`)
         .set('x-access-token',usedAccessToken)
         .send({
-          answer: 'Answer 1'
+          answer: 'any_answer'
         })
         .expect(200)
     })

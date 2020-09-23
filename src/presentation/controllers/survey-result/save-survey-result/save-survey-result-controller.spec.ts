@@ -1,8 +1,10 @@
 import { SaveSurveyResultController } from './save-survey-result-controller'
-import { SurveyModel, LoadSurveyById,SaveSurveyResultParams, SaveSurveyResult,SurveyResultModel } from './save-survey-result-protocols'
+import { LoadSurveyById, SaveSurveyResult } from './save-survey-result-protocols'
 import { HttpRequest } from '@/presentation/protocols'
 import { forbidenRequest, serverErrorRequest, okRequest } from '@/presentation/helpers/http/http-helper'
 import { InvalidParamError } from '@/presentation/errors'
+import { throwError, makeMockSurveyResultModel, makeSaveSurveyResultParams } from '@/domain/test'
+import { makeMockSaveSurveyResult, makeMockLoadSurveyById } from '@/presentation/test'
 import MockDate from 'mockdate'
 
 const makeMockRequest = (): HttpRequest => ({
@@ -14,53 +16,15 @@ const makeMockRequest = (): HttpRequest => ({
   },
   accountId: 'any_account_id'
 })
-const makeMockSurvey = (): SurveyModel => (
-  {
-    id: 'any_survey_id',
-    question: 'any_question',
-    possibleAnswers: [{
-      image: 'any_image',
-      answer: 'any_answer'
-    }],
-    date: new Date()
-  }
-)
 
-const makeSaveSurveyResultData = (): SaveSurveyResultParams => ({
-  surveyId: 'any_survey_id',
-  accountId: 'any_account_id',
-  answer: 'any_answer',
-  date: new Date()
-})
-const makeMockSurveyResult = (): SurveyResultModel => ({
-  id: 'any_survey_result_id',
-  ...makeSaveSurveyResultData()
-})
-const makeSaveSurveyResult = (): SaveSurveyResult => {
-  class SaveSurveyResultStub implements SaveSurveyResult {
-    async save (surveyResultData: SaveSurveyResultParams): Promise<SurveyResultModel> {
-      return makeMockSurveyResult()
-    }
-  }
-  return new SaveSurveyResultStub()
-}
-
-const makeLoadSurveyById = (): LoadSurveyById => {
-  class LoadSurveyByIdStub implements LoadSurveyById {
-    async loadById (id: string): Promise<SurveyModel> {
-      return makeMockSurvey()
-    }
-  }
-  return new LoadSurveyByIdStub()
-}
 type SutTypes = {
   sut: SaveSurveyResultController
   loadSurveyByIdStub: LoadSurveyById
   saveSurveyResultStub: SaveSurveyResult
 }
 const makeSut = (): SutTypes => {
-  const saveSurveyResultStub = makeSaveSurveyResult()
-  const loadSurveyByIdStub = makeLoadSurveyById()
+  const saveSurveyResultStub = makeMockSaveSurveyResult()
+  const loadSurveyByIdStub = makeMockLoadSurveyById()
   const sut = new SaveSurveyResultController(loadSurveyByIdStub,saveSurveyResultStub)
   return {
     sut,
@@ -90,7 +54,7 @@ describe('SaveSurveyResultController', () => {
     })
     test('Should return 500 if LoadSurveyById throws', async () => {
       const { sut,loadSurveyByIdStub } = makeSut()
-      jest.spyOn(loadSurveyByIdStub,'loadById').mockReturnValueOnce(new Promise((resolve,reject) => reject(new Error())))
+      jest.spyOn(loadSurveyByIdStub,'loadById').mockImplementationOnce(throwError)
       const httpResponse = await sut.handle(makeMockRequest())
       expect(httpResponse).toEqual(serverErrorRequest(new Error()))
     })
@@ -109,11 +73,11 @@ describe('SaveSurveyResultController', () => {
       const { sut,saveSurveyResultStub } = makeSut()
       const saveSpy = jest.spyOn(saveSurveyResultStub,'save')
       await sut.handle(makeMockRequest())
-      expect(saveSpy).toHaveBeenCalledWith(makeSaveSurveyResultData())
+      expect(saveSpy).toHaveBeenCalledWith(makeSaveSurveyResultParams())
     })
     test('Should return 500 if SaveSurveyResult throws', async () => {
       const { sut,saveSurveyResultStub } = makeSut()
-      jest.spyOn(saveSurveyResultStub,'save').mockReturnValueOnce(new Promise((resolve,reject) => reject(new Error())))
+      jest.spyOn(saveSurveyResultStub,'save').mockImplementationOnce(throwError)
       const httpResponse = await sut.handle(makeMockRequest())
       expect(httpResponse).toEqual(serverErrorRequest(new Error()))
     })
@@ -122,7 +86,7 @@ describe('SaveSurveyResultController', () => {
     test('Should return 200 on success', async () => {
       const { sut } = makeSut()
       const httpResponse = await sut.handle(makeMockRequest())
-      expect(httpResponse).toEqual(okRequest(makeMockSurveyResult()))
+      expect(httpResponse).toEqual(okRequest(makeMockSurveyResultModel()))
     })
   })
 })

@@ -1,35 +1,16 @@
 import { LoadSurveysController } from './load-surveys-controller'
-import { SurveyModel, LoadSurveys } from './load-surveys-protocols'
+import { LoadSurveys } from './load-surveys-protocols'
 import { okRequest, serverErrorRequest, noContentRequest } from '@/presentation/helpers/http/http-helper'
+import { throwError, makeMockSurveysModelList } from '@/domain/test'
+import { makeMockLoadSurveys } from '@/presentation/test'
 import MockDate from 'mockdate'
-const makeMockSurvey = (): SurveyModel => (
-  {
-    id: 'any_id',
-    question: 'any_question',
-    possibleAnswers: [{
-      image: 'any_image',
-      answer: 'any_answer'
-    }],
-    date: new Date()
-  }
-)
-const makeMockSurveysList = (): SurveyModel[] => [
-  makeMockSurvey(),makeMockSurvey()
-]
-const makeLoadSurveys = (): LoadSurveys => {
-  class LoadSurveysStub implements LoadSurveys {
-    async load (): Promise<SurveyModel[]> {
-      return makeMockSurveysList()
-    }
-  }
-  return new LoadSurveysStub()
-}
+
 type SutTypes = {
   sut: LoadSurveysController
   loadSurveysStub: LoadSurveys
 }
 const makeSut = (): SutTypes => {
-  const loadSurveysStub = makeLoadSurveys()
+  const loadSurveysStub = makeMockLoadSurveys()
   const sut = new LoadSurveysController(loadSurveysStub)
   return {
     sut,
@@ -58,11 +39,11 @@ describe('Load Suveys Controller',() => {
   test('Should return 200 on success', async () => {
     const { sut } = makeSut()
     const httpResponse = await sut.handle({})
-    expect(httpResponse).toEqual(okRequest(makeMockSurveysList()))
+    expect(httpResponse).toEqual(okRequest(makeMockSurveysModelList()))
   })
   test('Should return 500 if LoadSurveys throws', async () => {
     const { sut,loadSurveysStub } = makeSut()
-    jest.spyOn(loadSurveysStub,'load').mockReturnValueOnce(new Promise((resolve,reject) => reject(new Error())))
+    jest.spyOn(loadSurveysStub,'load').mockImplementationOnce(throwError)
     const httpResponse = await sut.handle({})
     expect(httpResponse).toEqual(serverErrorRequest(new Error()))
   })

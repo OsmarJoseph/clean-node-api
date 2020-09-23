@@ -1,50 +1,16 @@
 import { SignUpController } from './signup-controller'
-import { AddAccount, AddAccountParams, AccountModel, Validation, Authentication, AuthenticationParams } from './signup-controller-protocols'
+import { AddAccount, Validation, Authentication } from './signup-controller-protocols'
 import { HttpRequest } from '@/presentation/protocols'
 import { okRequest,badRequest,serverErrorRequest, forbidenRequest } from '@/presentation/helpers/http/http-helper'
 import { ParamInUseError } from '@/presentation/errors/'
-
-const makeAddAccount = (): AddAccount => {
-  class AddAccountStub implements AddAccount {
-    async add (account: AddAccountParams): Promise<AccountModel> {
-      return makeValidAccount()
-    }
-  }
-  return new AddAccountStub()
-}
-
-const makeValidation = (): Validation => {
-  class ValidationStub implements Validation {
-    validate (input: any): Error {
-      return null
-    }
-  }
-  return new ValidationStub()
-}
-
-const makeAuthentication = (): Authentication => {
-  class AuthenticationStub implements Authentication {
-    async auth (authenticationParams: AuthenticationParams): Promise<string> {
-      return 'any_token'
-    }
-  }
-  return new AuthenticationStub()
-}
+import { makeMockAddAccountParams } from '@/domain/test'
+import { makeMockValidation, makeMockAuthentication , makeMockAddAccount } from '@/presentation/test'
 
 const makeMockRequest = (): HttpRequest => ({
   body: {
-    name: 'any_name',
-    email: 'any_email@mail.com',
-    password: 'any_password',
+    ...makeMockAddAccountParams(),
     passwordConfirmation: 'any_password'
   }
-})
-
-const makeValidAccount = (): AccountModel => ({
-  id: 'valid_id',
-  name: 'valid_name',
-  email: 'valid_email@mail.com',
-  password: 'valid_password'
 })
 
 type SutTypes = {
@@ -55,9 +21,9 @@ type SutTypes = {
 }
 
 const makeSut = (): SutTypes => {
-  const addAccountStub = makeAddAccount()
-  const validationStub = makeValidation()
-  const authenticationStub = makeAuthentication()
+  const addAccountStub = makeMockAddAccount()
+  const validationStub = makeMockValidation()
+  const authenticationStub = makeMockAuthentication()
 
   const sut = new SignUpController(addAccountStub,validationStub,authenticationStub)
   return {

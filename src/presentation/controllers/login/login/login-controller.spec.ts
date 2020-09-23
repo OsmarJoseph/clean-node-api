@@ -1,25 +1,9 @@
 import { LoginController } from './login-controller'
 import { HttpRequest, Authentication, Validation } from './login-controller-protocols'
 import { badRequest, serverErrorRequest, unauthorizedRequest, okRequest } from '@/presentation/helpers/http/http-helper'
-import { AuthenticationParams } from '@/domain/usecases/account/authentication'
+import { makeMockAuthenticationParams } from '@/domain/test'
+import { makeMockAuthentication, makeMockValidation } from '@/presentation/test'
 
-const makeAuthentication = (): Authentication => {
-  class AuthenticationStub implements Authentication {
-    async auth (authenticationParams: AuthenticationParams): Promise<string> {
-      return 'any_token'
-    }
-  }
-  return new AuthenticationStub()
-}
-
-const makeValidation = (): Validation => {
-  class ValidationStub implements Validation {
-    validate (input: any): Error {
-      return null
-    }
-  }
-  return new ValidationStub()
-}
 type SutTypes = {
   sut: LoginController
   authenticationStub: Authentication
@@ -27,8 +11,8 @@ type SutTypes = {
 }
 
 const makeSut = (): SutTypes => {
-  const authenticationStub = makeAuthentication()
-  const validationStub = makeValidation()
+  const authenticationStub = makeMockAuthentication()
+  const validationStub = makeMockValidation()
 
   const sut = new LoginController(authenticationStub,validationStub)
   return {
@@ -40,8 +24,7 @@ const makeSut = (): SutTypes => {
 
 const makeMockRequest = (): HttpRequest => ({
   body: {
-    email: 'any_mail@mail.com',
-    password: 'any_password'
+    ...makeMockAuthenticationParams()
   }
 })
 describe('Login Controller',() => {
@@ -52,7 +35,7 @@ describe('Login Controller',() => {
     await sut.handle(httpRequest)
     expect(authSpy).toHaveBeenCalledWith(
       {
-        email: 'any_mail@mail.com',
+        email: 'any_email@mail.com',
         password: 'any_password'
       })
   })

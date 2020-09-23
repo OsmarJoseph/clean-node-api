@@ -1,4 +1,4 @@
-import { AddLogModel } from '@/domain/models/log'
+import { AddLogParams } from '@/domain/models/log'
 import { AddAccountParams } from '@/domain/usecases/account/add-account'
 import { AddSurveyParams } from '@/domain/usecases/survey/add-survey'
 import { SaveSurveyResultParams } from '@/domain/usecases/survey-result/save-survey-result'
@@ -11,7 +11,7 @@ export const getAccountsCollection = async (): Promise<AccountsCollection> => aw
 export type SurveysCollection = Collection<AddSurveyParams>
 export const getSurveysCollection = async (): Promise<SurveysCollection> => await MongoHelper.getCollection('surveys')
 
-export type ErrorCollection = Collection<AddLogModel>
+export type ErrorCollection = Collection<AddLogParams>
 export const getErrorCollection = async (): Promise<ErrorCollection> => await MongoHelper.getCollection('errors')
 
 export type SurveyResultsCollection = Collection<SaveSurveyResultParams>

@@ -1,24 +1,10 @@
-import { HttpRequest, Validation, AddSurvey, AddSurveyParams } from './add-survey-protocols'
+import { HttpRequest, Validation, AddSurvey } from './add-survey-protocols'
 import { AddSurveyController } from './add-survey-controller'
 import { badRequest, serverErrorRequest,noContentRequest } from '@/presentation/helpers/http/http-helper'
+import { throwError, makeAddSurveyParams } from '@/domain/test'
+import { makeMockValidation, makeMockAddSurvey } from '@/presentation/test'
 import MockDate from 'mockdate'
-const makeValidation = (): Validation => {
-  class ValidationStub implements Validation {
-    validate (input: any): Error {
-      return null
-    }
-  }
-  return new ValidationStub()
-}
 
-const makeAddSurvey = (): AddSurvey => {
-  class AddSurveyStub implements AddSurvey {
-    async add (data: AddSurveyParams): Promise<void> {
-      return null
-    }
-  }
-  return new AddSurveyStub()
-}
 type SutTypes = {
   sut: AddSurveyController
   validationStub: Validation
@@ -26,8 +12,8 @@ type SutTypes = {
 
 }
 const makeSut = (): SutTypes => {
-  const validationStub = makeValidation()
-  const addSurveyStub = makeAddSurvey()
+  const validationStub = makeMockValidation()
+  const addSurveyStub = makeMockAddSurvey()
   const sut = new AddSurveyController(validationStub,addSurveyStub)
   return {
     sut,
@@ -37,12 +23,7 @@ const makeSut = (): SutTypes => {
 }
 const makeHttpRquest = (): HttpRequest => ({
   body: {
-    question: 'any_question',
-    possibleAnswers: [{
-      image: 'any_image',
-      answer: 'any_answer'
-    }],
-    date: new Date()
+    ...makeAddSurveyParams()
   }
 })
 describe('Add Survey Controller', () => {
@@ -74,7 +55,7 @@ describe('Add Survey Controller', () => {
   })
   test('Should return 500 if AddSurvey throws', async () => {
     const { sut,addSurveyStub } = makeSut()
-    jest.spyOn(addSurveyStub,'add').mockReturnValueOnce(new Promise((resolve,reject) => reject(new Error())))
+    jest.spyOn(addSurveyStub,'add').mockImplementationOnce(throwError)
     const httpResponse = await sut.handle(makeHttpRquest())
     expect(httpResponse).toEqual(serverErrorRequest(new Error()))
   })

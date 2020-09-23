@@ -2,6 +2,7 @@ import { AddSurveyModel } from '@/domain/usecases/survey/add-survey'
 import { SurveyMongoRepository } from './survey-mongo-repository'
 import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
 import { getSurveysCollection, SurveysCollection } from '@/infra/db/mongodb/collections'
+
 let surveyCollection: SurveysCollection
 const makeSurveyData = (): AddSurveyModel => (
   {
@@ -62,7 +63,8 @@ describe('SurveyMongoRepository',() => {
   describe('loadById',() => {
     test('Should return null if loadById fails', async () => {
       const sut = makeSut()
-      const survey = await sut.loadById('any_id')
+      const anyId = '53cb6b9b4f4ddef1ad47f943'
+      const survey = await sut.loadById(anyId)
       expect(survey).toBeFalsy()
     })
     test('Should return a survey on loadById success', async () => {

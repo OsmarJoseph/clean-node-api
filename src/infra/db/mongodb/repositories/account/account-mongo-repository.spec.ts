@@ -1,10 +1,10 @@
 import { AccountMongoRepository } from './account-mongo-repository'
-import { AddAccountModel } from '@/domain/usecases/account/add-account'
+import { AddAccountParams } from '@/domain/usecases/account/add-account'
 import { AccountModel } from '@/domain/models/account'
 import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
 import { getAccountsCollection, AccountsCollection } from '@/infra/db/mongodb/collections'
 const makeSut = (): AccountMongoRepository => new AccountMongoRepository()
-const makeAddParams = (): AddAccountModel => ({
+const makeAddParams = (): AddAccountParams => ({
   name: 'any_name',
   email: 'any_email@mail.com',
   password: 'any_password'

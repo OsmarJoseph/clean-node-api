@@ -1,6 +1,6 @@
 import { AccountModel } from '@/domain/models/account'
-import { AddAccountModel } from '@/domain/usecases/account/add-account'
-import { AddSurveyModel } from '@/domain/usecases/survey/add-survey'
+import { AddAccountParams } from '@/domain/usecases/account/add-account'
+import { AddSurveyParams } from '@/domain/usecases/survey/add-survey'
 import { app } from '@/main/config/app'
 import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
 import { AccountsCollection, getAccountsCollection, SurveysCollection, getSurveysCollection } from '@/infra/db/mongodb/collections'
@@ -8,7 +8,7 @@ import { env } from '@/main/config/env'
 import request from 'supertest'
 import { sign } from 'jsonwebtoken'
 
-const makeSurveyData = (): AddSurveyModel => (
+const makeSurveyData = (): AddSurveyParams => (
   {
     question: 'Question 1',
     possibleAnswers: [{
@@ -19,7 +19,7 @@ const makeSurveyData = (): AddSurveyModel => (
   }
 )
 
-const makeAccountParams = (): AddAccountModel => ({
+const makeAccountParams = (): AddAccountParams => ({
   name: 'any_name',
   email: 'any_email@mail.com',
   password: 'any_password'

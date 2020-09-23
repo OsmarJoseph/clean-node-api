@@ -2,9 +2,9 @@ import { SurveyResultMongoRepository } from './survey-result-mongo-repository'
 import { SurveyModel } from '@/domain/models/survey'
 import { AccountModel } from '@/domain/models/account'
 import { SurveyResultModel } from '@/domain/models/survey-result'
-import { AddSurveyModel } from '@/domain/usecases/survey/add-survey'
-import { AddAccountModel } from '@/domain/usecases/account/add-account'
-import { SaveSurveyResultModel } from '@/domain/usecases/survey-result/save-survey-result'
+import { AddSurveyParams } from '@/domain/usecases/survey/add-survey'
+import { AddAccountParams } from '@/domain/usecases/account/add-account'
+import { SaveSurveyResultParams } from '@/domain/usecases/survey-result/save-survey-result'
 import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
 import { getAccountsCollection,AccountsCollection, getSurveysCollection, SurveysCollection, getSurveyResultsCollection, SurveyResultsCollection } from '@/infra/db/mongodb/collections'
 
@@ -12,7 +12,7 @@ let surveyCollection: SurveysCollection
 let surveyResultCollection: SurveyResultsCollection
 let accountCollection: AccountsCollection
 
-const makeSurveyData = (): AddSurveyModel => (
+const makeSurveyData = (): AddSurveyParams => (
   {
     question: 'any_question',
     possibleAnswers: [{
@@ -27,7 +27,7 @@ const makeSurveyData = (): AddSurveyModel => (
   }
 )
 
-const makeAccountData = (): AddAccountModel => ({
+const makeAccountData = (): AddAccountParams => ({
   name: 'any_name',
   email: 'any_email@mail.com',
   password: 'any_password'
@@ -43,7 +43,7 @@ const insertAccountOnDatabase = async (): Promise<AccountModel> => {
   return MongoHelper.map(account.ops[0])
 }
 
-const insertSurveyResultOnDatabase = async (surveyResultData: SaveSurveyResultModel): Promise<SurveyResultModel> => {
+const insertSurveyResultOnDatabase = async (surveyResultData: SaveSurveyResultParams): Promise<SurveyResultModel> => {
   const savedSurveyResult = await surveyResultCollection.insertOne(surveyResultData)
   return MongoHelper.map(savedSurveyResult.ops[0])
 }

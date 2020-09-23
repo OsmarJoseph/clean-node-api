@@ -1,5 +1,5 @@
 import { SaveSurveyResultController } from './save-survey-result-controller'
-import { SurveyModel, LoadSurveyById,SaveSurveyResultModel, SaveSurveyResult,SurveyResultModel } from './save-survey-result-protocols'
+import { SurveyModel, LoadSurveyById,SaveSurveyResultParams, SaveSurveyResult,SurveyResultModel } from './save-survey-result-protocols'
 import { HttpRequest } from '@/presentation/protocols'
 import { forbidenRequest, serverErrorRequest, okRequest } from '@/presentation/helpers/http/http-helper'
 import { InvalidParamError } from '@/presentation/errors'
@@ -26,7 +26,7 @@ const makeMockSurvey = (): SurveyModel => (
   }
 )
 
-const makeSaveSurveyResultData = (): SaveSurveyResultModel => ({
+const makeSaveSurveyResultData = (): SaveSurveyResultParams => ({
   surveyId: 'any_survey_id',
   accountId: 'any_account_id',
   answer: 'any_answer',
@@ -38,7 +38,7 @@ const makeMockSurveyResult = (): SurveyResultModel => ({
 })
 const makeSaveSurveyResult = (): SaveSurveyResult => {
   class SaveSurveyResultStub implements SaveSurveyResult {
-    async save (surveyResultData: SaveSurveyResultModel): Promise<SurveyResultModel> {
+    async save (surveyResultData: SaveSurveyResultParams): Promise<SurveyResultModel> {
       return makeMockSurveyResult()
     }
   }

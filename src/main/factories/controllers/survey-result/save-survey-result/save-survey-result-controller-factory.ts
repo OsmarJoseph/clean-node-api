@@ -2,7 +2,12 @@ import { makeDbLoadSurveyById } from '@/main/factories/usecases/survey/load-surv
 import { makeDbSaveSurveyResult } from '@/main/factories/usecases/survey-result/save-survey-result/db-save-survey-result-factory'
 import { SaveSurveyResultController } from '@/presentation/controllers/survey-result/save-survey-result/save-survey-result-controller'
 import { Controller } from '@/presentation/protocols'
+import { makeLogControllerDecorator } from '@/main/factories/decorators/log-controller-decorator-factory'
 
 export const makeSaveSurveyResultController = (): Controller => {
-  return new SaveSurveyResultController(makeDbLoadSurveyById(),makeDbSaveSurveyResult())
+  const saveSurveyResultController = new SaveSurveyResultController(
+    makeDbLoadSurveyById(),
+    makeDbSaveSurveyResult()
+  )
+  return makeLogControllerDecorator(saveSurveyResultController)
 }

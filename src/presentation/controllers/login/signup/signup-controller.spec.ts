@@ -3,7 +3,7 @@ import { AddAccount, Validation, Authentication } from './signup-controller-prot
 import { HttpRequest } from '@/presentation/protocols'
 import { okRequest,badRequest,serverErrorRequest, forbidenRequest } from '@/presentation/helpers/http/http-helper'
 import { ParamInUseError } from '@/presentation/errors/'
-import { makeMockAddAccountParams } from '@/domain/test'
+import { makeMockAddAccountParams, throwError } from '@/domain/test'
 import { makeMockValidation, makeMockAuthentication , makeMockAddAccount } from '@/presentation/test'
 
 const makeMockRequest = (): HttpRequest => ({
@@ -49,9 +49,7 @@ describe('SignUp Controller', () => {
 
   test('Should return 500 if AddAccount throws', async () => {
     const { sut,addAccountStub } = makeSut()
-    jest.spyOn(addAccountStub,'add').mockImplementationOnce(async () => {
-      throw new Error()
-    })
+    jest.spyOn(addAccountStub,'add').mockImplementationOnce(throwError)
     const httpResponse = await sut.handle(makeMockRequest())
     expect(httpResponse).toEqual(serverErrorRequest(new Error()))
   })
@@ -63,7 +61,7 @@ describe('SignUp Controller', () => {
   })
   test('Should return 403 if AddAccount return null', async () => {
     const { sut,addAccountStub } = makeSut()
-    jest.spyOn(addAccountStub,'add').mockReturnValueOnce(new Promise(resolve => resolve(null)))
+    jest.spyOn(addAccountStub,'add').mockReturnValueOnce(Promise.resolve(null))
     const httpResponse = await sut.handle(makeMockRequest())
     expect(httpResponse).toEqual(forbidenRequest(new ParamInUseError('email')))
   })
@@ -96,7 +94,7 @@ describe('SignUp Controller', () => {
   })
   test('Should return 500 if authentication throws',async () => {
     const { sut,authenticationStub } = makeSut()
-    jest.spyOn(authenticationStub,'auth').mockImplementationOnce(async () => { throw new Error() })
+    jest.spyOn(authenticationStub,'auth').mockImplementationOnce(throwError)
     const httpResponse = await sut.handle(makeMockRequest())
     expect(httpResponse).toEqual(serverErrorRequest(new Error()))
   })

@@ -1,7 +1,7 @@
-import express from 'express'
 import { setupMiddlewares } from './middlewares'
 import { setupRoutes } from './routes'
 import { setupSwagger } from './swagger-config'
+import express from 'express'
 
 const app = express()
 setupSwagger(app)

@@ -1,3 +1,5 @@
 export * from './body-parser/body-parser'
 export * from './cors/cors'
 export * from './content-type/content-type'
+export * from './auth/admin-auth'
+export * from './auth/normal-auth'

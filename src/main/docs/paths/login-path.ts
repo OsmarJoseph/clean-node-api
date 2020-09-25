@@ -6,7 +6,7 @@ export const loginPath = {
       content: {
         'application/json': {
           schema: {
-            $ref: '#/schemas/login-params'
+            $ref: '#/schemas/loginParamsSchema'
           }
         }
       }
@@ -17,10 +17,22 @@ export const loginPath = {
         content: {
           'application/json': {
             schema: {
-              $ref: '#/schemas/account'
+              $ref: '#/schemas/accountSchema'
             }
           }
         }
+      },
+      400: {
+        $ref: '#/components/badRequestComponent'
+      },
+      401: {
+        $ref: '#/components/unauthorizedRequestComponent'
+      },
+      404: {
+        $ref: '#/components/notFoundComponent'
+      },
+      500: {
+        $ref: '#/components/serverErrorComponent'
       }
     }
   }

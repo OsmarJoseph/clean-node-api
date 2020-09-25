@@ -1,5 +1,11 @@
 import { loginPath } from './paths'
-import { accountSchema, loginParamsSchema } from './schemas'
+import { accountSchema, loginParamsSchema,errorSchema } from './schemas'
+import {
+  badRequestComponent,
+  unauthorizedRequestComponent,
+  serverErrorComponent,
+  notFoundComponent
+} from './components'
 
 export const docsConfig = {
   openapi: '3.0.0',
@@ -18,7 +24,14 @@ export const docsConfig = {
     '/login': loginPath
   },
   schemas: {
-    account: accountSchema,
-    'login-params': loginParamsSchema
+    accountSchema,
+    loginParamsSchema,
+    errorSchema
+  },
+  components: {
+    badRequestComponent,
+    unauthorizedRequestComponent,
+    serverErrorComponent,
+    notFoundComponent
   }
 }

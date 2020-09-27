@@ -1,21 +1,6 @@
-import { loginPath,surveyPath } from './paths'
-import {
-  accessSchema,
-  loginParamsSchema,
-  errorSchema,
-  surveySchema,
-  surveyAnswerSchema,
-  surveysListSchema,
-  apiKeyAuthSchema
-} from './schemas'
-import {
-  badRequestComponent,
-  unauthorizedRequestComponent,
-  serverErrorComponent,
-  notFoundComponent,
-  forbidenRequestComponent
-} from './components'
-
+import { loginPath,surveyPath,signUpPath } from './paths'
+import * as schemas from './schemas'
+import * as components from './components'
 export const docsConfig = {
   openapi: '3.0.0',
   info: {
@@ -33,25 +18,15 @@ export const docsConfig = {
   }],
   paths: {
     '/login': loginPath,
+    '/signup': signUpPath,
     '/surveys': surveyPath
 
   },
-  schemas: {
-    accessSchema,
-    loginParamsSchema,
-    errorSchema,
-    surveySchema,
-    surveyAnswerSchema,
-    surveysListSchema
-  },
+  schemas,
   components: {
     securitySchemes: {
-      apiKeyAuthSchema
+      apiKeyAuthSchema: schemas.apiKeyAuthSchema
     },
-    badRequestComponent,
-    unauthorizedRequestComponent,
-    serverErrorComponent,
-    notFoundComponent,
-    forbidenRequestComponent
+    ...components
   }
 }

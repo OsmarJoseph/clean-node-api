@@ -1,4 +1,4 @@
-import { loginPath,surveyPath,signUpPath } from './paths'
+import { loginPath,surveyPath,signUpPath, surveyResultPath } from './paths'
 import * as schemas from './schemas'
 import * as components from './components'
 export const docsConfig = {
@@ -19,7 +19,8 @@ export const docsConfig = {
   paths: {
     '/login': loginPath,
     '/signup': signUpPath,
-    '/surveys': surveyPath
+    '/surveys': surveyPath,
+    '/surveys/{surveyId}/results': surveyResultPath
 
   },
   schemas,

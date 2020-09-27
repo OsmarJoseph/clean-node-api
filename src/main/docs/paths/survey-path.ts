@@ -28,6 +28,8 @@ export const surveyPath = {
     }
   },
   post: {
+    tags: ['Enquete'],
+    summary: 'API para criar uma enquete',
     security: [{
       apiKeyAuthSchema: []
     }],
@@ -40,8 +42,6 @@ export const surveyPath = {
         }
       }
     },
-    tags: ['Enquete'],
-    summary: 'API para criar uma enquete',
     responses: {
       204: {
         description: 'Sucesso'

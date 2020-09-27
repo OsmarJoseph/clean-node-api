@@ -1,10 +1,19 @@
-import { loginPath } from './paths'
-import { accountSchema, loginParamsSchema,errorSchema } from './schemas'
+import { loginPath,surveyPath } from './paths'
+import {
+  accessSchema,
+  loginParamsSchema,
+  errorSchema,
+  surveySchema,
+  surveyAnswerSchema,
+  surveysListSchema,
+  apiKeyAuthSchema
+} from './schemas'
 import {
   badRequestComponent,
   unauthorizedRequestComponent,
   serverErrorComponent,
-  notFoundComponent
+  notFoundComponent,
+  forbidenRequestComponent
 } from './components'
 
 export const docsConfig = {
@@ -19,19 +28,30 @@ export const docsConfig = {
   }],
   tags: [{
     name: 'Login'
+  },{
+    name: 'Enquete'
   }],
   paths: {
-    '/login': loginPath
+    '/login': loginPath,
+    '/surveys': surveyPath
+
   },
   schemas: {
-    accountSchema,
+    accessSchema,
     loginParamsSchema,
-    errorSchema
+    errorSchema,
+    surveySchema,
+    surveyAnswerSchema,
+    surveysListSchema
   },
   components: {
+    securitySchemes: {
+      apiKeyAuthSchema
+    },
     badRequestComponent,
     unauthorizedRequestComponent,
     serverErrorComponent,
-    notFoundComponent
+    notFoundComponent,
+    forbidenRequestComponent
   }
 }

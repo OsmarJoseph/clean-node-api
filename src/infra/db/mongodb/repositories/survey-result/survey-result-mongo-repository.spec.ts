@@ -50,37 +50,47 @@ describe('SurveyResultMongoRespository',() => {
   describe('save',() => {
     test('Should save a survey result if its new', async () => {
       const survey = await insertMockSurveyOnDatabase()
+      const { id: surveyId } = survey
       const account = await insertMockAccountOnDatabase()
       const sut = makeSut()
+      const usedAnswer = survey.possibleAnswers[0].answer
       const surveyResultParams = {
-        surveyId: survey.id,
+        surveyId,
         accountId: account.id,
-        answer: survey.possibleAnswers[0].answer,
+        answer: usedAnswer,
         date: new Date()
       }
       const savedSurveyResult = await sut.save({ ...surveyResultParams })
-      expect(savedSurveyResult.id).toBeTruthy()
-      expect(savedSurveyResult).toEqual({ ...surveyResultParams,id: savedSurveyResult.id })
+      const [firstAnswer] = savedSurveyResult.answers
+      expect(savedSurveyResult).toBeTruthy()
+      expect(savedSurveyResult.surveyId).toEqual(surveyId)
+      expect(firstAnswer.answer).toBe(usedAnswer)
+      expect(firstAnswer.count).toBe(1)
+      expect(firstAnswer.percent).toBe(100)
     })
     test('Should update a survey result if its not new', async () => {
       const survey = await insertMockSurveyOnDatabase()
+      const { id: surveyId } = survey
       const account = await insertMockAccountOnDatabase()
       const sut = makeSut()
+      const usedAnswer = survey.possibleAnswers[1].answer
       const surveyResultParams = {
-        surveyId: survey.id,
+        surveyId,
         accountId: account.id,
-        answer: survey.possibleAnswers[0].answer,
+        answer: usedAnswer,
         date: new Date()
       }
+      await insertMockSurveyResultOnDatabase({ ...surveyResultParams })
       const updatedAnswer = survey.possibleAnswers[1].answer
-      const savedMockSurveyResult = await insertMockSurveyResultOnDatabase({ ...surveyResultParams })
       const updatedSurveyResult = await sut.save(
         { ...surveyResultParams,answer: updatedAnswer }
       )
-      expect(updatedSurveyResult.id).toEqual(savedMockSurveyResult.id)
-      expect(updatedSurveyResult).toEqual(
-        { ...surveyResultParams,id: updatedSurveyResult.id,answer: updatedAnswer }
-      )
+      const [firstAnswer] = updatedSurveyResult.answers
+      expect(updatedSurveyResult.surveyId).toEqual(surveyId)
+      expect(updatedSurveyResult).toBeTruthy()
+      expect(firstAnswer.answer).toBe(usedAnswer)
+      expect(firstAnswer.count).toBe(1)
+      expect(firstAnswer.percent).toBe(100)
     })
   })
 })

@@ -8,4 +8,24 @@ export const makeSaveSurveyResultParams = (): SaveSurveyResultParams => ({
   date: new Date()
 })
 
-export const makeMockSurveyResultModel = (): SurveyResultModel => ({ ...makeSaveSurveyResultParams(), id: 'any_id' })
+export const makeMockSurveyResultModel = (): SurveyResultModel => (
+  {
+    surveyId: 'any_survey_id',
+    question: 'any_question',
+    answers: [
+      {
+        image: 'any_image',
+        answer: 'any_answer',
+        count: 1,
+        percent: 50
+      },
+      {
+        image: 'other_image',
+        answer: 'other_answer',
+        count: 1,
+        percent: 50
+      }
+    ],
+    date: new Date()
+  }
+)

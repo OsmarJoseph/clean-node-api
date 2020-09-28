@@ -61,12 +61,14 @@ describe('SurveyResultMongoRespository',() => {
         date: new Date()
       }
       const savedSurveyResult = await sut.save({ ...surveyResultParams })
-      const [firstAnswer] = savedSurveyResult.answers
       expect(savedSurveyResult).toBeTruthy()
+      const [firstAnswer,secondAnswer] = savedSurveyResult.answers
       expect(savedSurveyResult.surveyId).toEqual(surveyId)
       expect(firstAnswer.answer).toBe(usedAnswer)
       expect(firstAnswer.count).toBe(1)
       expect(firstAnswer.percent).toBe(100)
+      expect(secondAnswer.count).toBe(0)
+      expect(secondAnswer.percent).toBe(0)
     })
     test('Should update a survey result if its not new', async () => {
       const survey = await insertMockSurveyOnDatabase()
@@ -85,12 +87,14 @@ describe('SurveyResultMongoRespository',() => {
       const updatedSurveyResult = await sut.save(
         { ...surveyResultParams,answer: updatedAnswer }
       )
-      const [firstAnswer] = updatedSurveyResult.answers
-      expect(updatedSurveyResult.surveyId).toEqual(surveyId)
       expect(updatedSurveyResult).toBeTruthy()
+      const [firstAnswer,secondAnswer] = updatedSurveyResult.answers
+      expect(updatedSurveyResult.surveyId).toEqual(surveyId)
       expect(firstAnswer.answer).toBe(usedAnswer)
       expect(firstAnswer.count).toBe(1)
       expect(firstAnswer.percent).toBe(100)
+      expect(secondAnswer.count).toBe(0)
+      expect(secondAnswer.percent).toBe(0)
     })
   })
 })

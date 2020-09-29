@@ -97,4 +97,34 @@ describe('SurveyResultMongoRespository',() => {
       expect(secondAnswer.percent).toBe(0)
     })
   })
+  describe('loadBySurveyId', () => {
+    test('should return a surveyResult on LoadBySurveyId',async () => {
+      const survey = await insertMockSurveyOnDatabase()
+      const { id: surveyId } = survey
+      const account = await insertMockAccountOnDatabase()
+      const sut = makeSut()
+      const firstUsedAnswer = survey.possibleAnswers[0].answer
+      const secondUsedAnswer = survey.possibleAnswers[1].answer
+      const surveyResultParams = {
+        surveyId,
+        accountId: account.id,
+        answer: firstUsedAnswer,
+        date: new Date()
+      }
+      await insertMockSurveyResultOnDatabase({ ...surveyResultParams })
+      await insertMockSurveyResultOnDatabase({ ...surveyResultParams })
+      await insertMockSurveyResultOnDatabase({ ...surveyResultParams,answer: secondUsedAnswer })
+      await insertMockSurveyResultOnDatabase({ ...surveyResultParams,answer: secondUsedAnswer })
+      const loadedSurveyResult = await sut.loadBySurveyId(surveyId)
+      expect(loadedSurveyResult).toBeTruthy()
+      const [firstAnswer,secondAnswer] = loadedSurveyResult.answers
+      expect(loadedSurveyResult.surveyId).toEqual(surveyId)
+      expect(firstAnswer.answer).toBe(secondUsedAnswer)
+      expect(firstAnswer.count).toBe(2)
+      expect(firstAnswer.percent).toBe(50)
+      expect(secondAnswer.answer).toBe(firstUsedAnswer)
+      expect(secondAnswer.count).toBe(2)
+      expect(secondAnswer.percent).toBe(50)
+    })
+  })
 })

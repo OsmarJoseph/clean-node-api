@@ -52,49 +52,49 @@ describe('SurveyResultMongoRespository',() => {
       const survey = await insertMockSurveyOnDatabase()
       const { id: surveyId } = survey
       const account = await insertMockAccountOnDatabase()
+      const { id: accountId } = account
       const sut = makeSut()
       const usedAnswer = survey.possibleAnswers[0].answer
       const surveyResultParams = {
         surveyId,
-        accountId: account.id,
+        accountId,
         answer: usedAnswer,
         date: new Date()
       }
-      const savedSurveyResult = await sut.save({ ...surveyResultParams })
+      await sut.save({ ...surveyResultParams })
+      const savedSurveyResult = await surveyResultCollection.findOne({
+        surveyId,
+        accountId,
+        answer: usedAnswer
+
+      })
       expect(savedSurveyResult).toBeTruthy()
-      const [firstAnswer,secondAnswer] = savedSurveyResult.answers
-      expect(savedSurveyResult.surveyId).toEqual(surveyId)
-      expect(firstAnswer.answer).toBe(usedAnswer)
-      expect(firstAnswer.count).toBe(1)
-      expect(firstAnswer.percent).toBe(100)
-      expect(secondAnswer.count).toBe(0)
-      expect(secondAnswer.percent).toBe(0)
     })
     test('Should update a survey result if its not new', async () => {
       const survey = await insertMockSurveyOnDatabase()
       const { id: surveyId } = survey
       const account = await insertMockAccountOnDatabase()
+      const { id: accountId } = account
       const sut = makeSut()
       const usedAnswer = survey.possibleAnswers[1].answer
       const surveyResultParams = {
         surveyId,
-        accountId: account.id,
+        accountId,
         answer: usedAnswer,
         date: new Date()
       }
       await insertMockSurveyResultOnDatabase({ ...surveyResultParams })
       const updatedAnswer = survey.possibleAnswers[1].answer
-      const updatedSurveyResult = await sut.save(
+      await sut.save(
         { ...surveyResultParams,answer: updatedAnswer }
       )
+      const updatedSurveyResult = await surveyResultCollection.find({
+        surveyId,
+        accountId,
+        answer: updatedAnswer
+      }).toArray()
       expect(updatedSurveyResult).toBeTruthy()
-      const [firstAnswer,secondAnswer] = updatedSurveyResult.answers
-      expect(updatedSurveyResult.surveyId).toEqual(surveyId)
-      expect(firstAnswer.answer).toBe(usedAnswer)
-      expect(firstAnswer.count).toBe(1)
-      expect(firstAnswer.percent).toBe(100)
-      expect(secondAnswer.count).toBe(0)
-      expect(secondAnswer.percent).toBe(0)
+      expect(updatedSurveyResult.length).toBe(1)
     })
   })
   describe('loadBySurveyId', () => {

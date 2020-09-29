@@ -7,10 +7,17 @@ export class DbLoadSurveyResult implements LoadSurveyResult {
   ) {}
 
   async load (surveyId: string): Promise<SurveyResultModel> {
-    const loadedSurveyResult = await this.loadSurveyResultRepository.loadBySurveyId(surveyId)
-    if (!loadedSurveyResult) {
-      await this.loadSurveyByIdRepository.loadById(surveyId)
+    let surveyResult = await this.loadSurveyResultRepository.loadBySurveyId(surveyId)
+    if (!surveyResult) {
+      const survey = await this.loadSurveyByIdRepository.loadById(surveyId)
+      const answers = survey.possibleAnswers.map(answerObject => ({ ...answerObject,count: 0,percent: 0 }))
+      surveyResult = {
+        surveyId: survey.id,
+        question: survey.question,
+        date: survey.date,
+        answers
+      }
     }
-    return loadedSurveyResult
+    return surveyResult
   }
 }

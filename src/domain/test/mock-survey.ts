@@ -18,7 +18,7 @@ export const makeAddSurveyParams = (): AddSurveyParams => (
 
 export const makeMockSurveyModel = (): SurveyModel => (
   {
-    id: 'any_id',
+    id: 'any_survey_id',
     ...makeAddSurveyParams()
   }
 )

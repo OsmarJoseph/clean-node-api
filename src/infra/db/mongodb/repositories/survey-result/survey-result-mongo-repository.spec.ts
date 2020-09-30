@@ -126,5 +126,12 @@ describe('SurveyResultMongoRespository',() => {
       expect(secondAnswer.count).toBe(2)
       expect(secondAnswer.percent).toBe(50)
     })
+    test('should return null on LoadBySurveyId if there is no survey result related to surveyId',async () => {
+      const survey = await insertMockSurveyOnDatabase()
+      const { id: surveyId } = survey
+      const sut = makeSut()
+      const loadedSurveyResult = await sut.loadBySurveyId(surveyId)
+      expect(loadedSurveyResult).toBeNull()
+    })
   })
 })

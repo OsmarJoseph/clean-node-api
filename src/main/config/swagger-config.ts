@@ -1,5 +1,5 @@
-import { docsConfig } from '../docs'
-import { noCache } from '../middlewares/no-cache/no-cache'
+import { noCache } from '@/main/middlewares'
+import { docsConfig } from '@/main/docs'
 import { serve,setup } from 'swagger-ui-express'
 import { Express } from 'express'
 

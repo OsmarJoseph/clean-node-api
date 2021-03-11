@@ -1,4 +1,4 @@
-import { Validation } from '@/presentation/protocols/validation'
+import { Validation } from '@/presentation/protocols'
 import { RequiredFiledValidation, ValidationComposite } from '@/validation/validators'
 
 export const makeAddSurveyValidation = (): Validation => {

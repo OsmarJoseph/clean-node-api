@@ -1,19 +1,18 @@
 import { DbLoadSurveys } from '@/data/usecases'
-import { LoadSurveysRepository } from '@/data/protocols'
 import { throwError, makeMockSurveysModelList } from '@/tests/domain-tests/mocks'
-import { makeLoadSurveysRepository } from '@/tests/data-tests/mocks'
+import { LoadSurveysRepositorySpy } from '@/tests/data-tests/mocks'
 import MockDate from 'mockdate'
 
 type SutTypes = {
   sut: DbLoadSurveys
-  loadSurveysRepositoryStub: LoadSurveysRepository
+  loadSurveysRepositorySpy: LoadSurveysRepositorySpy
 }
 const makeSut = (): SutTypes => {
-  const loadSurveysRepositoryStub = makeLoadSurveysRepository()
-  const sut = new DbLoadSurveys(loadSurveysRepositoryStub)
+  const loadSurveysRepositorySpy = new LoadSurveysRepositorySpy()
+  const sut = new DbLoadSurveys(loadSurveysRepositorySpy)
   return {
     sut,
-    loadSurveysRepositoryStub
+    loadSurveysRepositorySpy
   }
 }
 describe('DbLoadSurveys', () => {
@@ -24,16 +23,13 @@ describe('DbLoadSurveys', () => {
     MockDate.reset()
   })
   test('Should call LoadSurveysRepository', async () => {
-    const { sut, loadSurveysRepositoryStub } = makeSut()
-    const loadAllSpy = jest.spyOn(loadSurveysRepositoryStub, 'loadAll')
+    const { sut, loadSurveysRepositorySpy } = makeSut()
     await sut.load()
-    expect(loadAllSpy).toHaveBeenCalled()
+    expect(loadSurveysRepositorySpy.callCount).toBe(1)
   })
   test('Should throw if loadSurveysRepository throws', async () => {
-    const { sut, loadSurveysRepositoryStub } = makeSut()
-    jest
-      .spyOn(loadSurveysRepositoryStub, 'loadAll')
-      .mockImplementationOnce(throwError)
+    const { sut, loadSurveysRepositorySpy } = makeSut()
+    loadSurveysRepositorySpy.loadAll = throwError
     const surveysListPromise = sut.load()
     await expect(surveysListPromise).rejects.toThrow()
   })

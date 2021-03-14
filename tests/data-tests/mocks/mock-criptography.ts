@@ -1,37 +1,44 @@
-import { Hasher , HashComparer , Decrypter , Encrypter } from '@/data/protocols'
+import { Hasher, HashComparer, Decrypter, Encrypter } from '@/data/protocols'
+import faker from 'faker'
 
-export const makeMockHasher = (): Hasher => {
-  class HasherStub implements Hasher {
-    async hash (value: string): Promise<string> {
-      return 'hashed_password'
-    }
+export class HasherSpy implements Hasher {
+  digest = faker.random.uuid()
+  plaintext: string
+
+  async hash (plaintext: string): Promise<string> {
+    this.plaintext = plaintext
+    return this.digest
   }
-  return new HasherStub()
 }
 
-export const makeMockHashComparer = (): HashComparer => {
-  class HashComparerStub implements HashComparer {
-    async compare (value: string,hash: string): Promise<boolean> {
-      return true
-    }
+export class HashComparerSpy implements HashComparer {
+  plaintext: string
+  digest: string
+  isValid = true
+
+  async compare (plaintext: string, digest: string): Promise<boolean> {
+    this.plaintext = plaintext
+    this.digest = digest
+    return this.isValid
   }
-  return new HashComparerStub()
 }
 
-export const makeMockDecrypter = (): Decrypter => {
-  class DecrypterStub implements Decrypter {
-    async decrypt (value: string): Promise<string> {
-      return 'any_value'
-    }
+export class DecrypterSpy implements Decrypter {
+  plaintext = faker.internet.password()
+  ciphertext: string
+
+  async decrypt (ciphertext: string): Promise<string> {
+    this.ciphertext = ciphertext
+    return this.plaintext
   }
-  return new DecrypterStub()
 }
 
-export const makeMockEncrypter = (): Encrypter => {
-  class EncrypterStub implements Encrypter {
-    async encrypt (value: string): Promise<string> {
-      return 'any_token'
-    }
+export class EncrypterSpy implements Encrypter {
+  ciphertext = faker.random.uuid()
+  plaintext: string
+
+  async encrypt (plaintext: string): Promise<string> {
+    this.plaintext = plaintext
+    return this.ciphertext
   }
-  return new EncrypterStub()
 }

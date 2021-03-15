@@ -1,39 +1,37 @@
 import { EmailValidation } from '@/validation/validators'
-import { EmailValidator } from '@/validation/protocols'
-import { makeMockEmailValidator } from '@/tests/validation-tests/mocks'
+import { EMailValidatorSpy } from '@/tests/validation-tests/mocks'
 import { InvalidParamError } from '@/presentation/errors'
 import { throwError } from '@/tests/domain-tests/mocks'
 
 type SutTypes = {
   sut: EmailValidation
-  emailValidatorStub: EmailValidator
+  emailValidatorSpy: EMailValidatorSpy
 }
 const makeSut = (): SutTypes => {
-  const emailValidatorStub = makeMockEmailValidator()
-  const sut = new EmailValidation('email',emailValidatorStub)
+  const emailValidatorSpy = new EMailValidatorSpy()
+  const sut = new EmailValidation('email',emailValidatorSpy)
   return {
     sut,
-    emailValidatorStub
+    emailValidatorSpy
   }
 }
 describe('Email Validation',() => {
   test('Should return an error if EmailValidator returns false', () => {
-    const { sut,emailValidatorStub } = makeSut()
-    jest.spyOn(emailValidatorStub,'isValid').mockReturnValueOnce(false)
+    const { sut,emailValidatorSpy } = makeSut()
+    emailValidatorSpy.isValid = () => false
     const validationError = sut.validate({ email: 'any_mail@mail.com' })
     expect(validationError).toEqual(new InvalidParamError('email'))
   })
 
   test('Should call EmailValidator with correct email', () => {
-    const { sut,emailValidatorStub } = makeSut()
-    const isValidSpy = jest.spyOn(emailValidatorStub,'isValid')
+    const { sut,emailValidatorSpy } = makeSut()
     sut.validate({ email: 'any_mail@mail.com' })
-    expect(isValidSpy).toHaveBeenCalledWith('any_mail@mail.com')
+    expect(emailValidatorSpy.email).toBe('any_mail@mail.com')
   })
 
   test('Should throw if EmailValidator throws', () => {
-    const { sut,emailValidatorStub } = makeSut()
-    jest.spyOn(emailValidatorStub,'isValid').mockImplementationOnce(throwError)
+    const { sut,emailValidatorSpy } = makeSut()
+    emailValidatorSpy.isValid = throwError
     expect(sut.validate).toThrow()
   })
 })

@@ -1,10 +1,9 @@
-import { LoadSurveyById, SaveSurveyResult } from '@/domain/usecases'
 import { SaveSurveyResultController } from '@/presentation/controllers'
 import { HttpRequest } from '@/presentation/protocols'
 import { forbidenRequest, serverErrorRequest, okRequest } from '@/presentation/helpers'
 import { InvalidParamError } from '@/presentation/errors'
 import { throwError, makeMockSurveyResultModel, makeSaveSurveyResultParams } from '@/tests/domain-tests/mocks'
-import { makeMockSaveSurveyResult, makeMockLoadSurveyById } from '@/tests/presentation-tests/mocks'
+import { SaveSurveyResultSpy, LoadSurveyByIdSpy } from '@/tests/presentation-tests/mocks'
 import MockDate from 'mockdate'
 
 const makeMockRequest = (): HttpRequest => ({
@@ -19,17 +18,17 @@ const makeMockRequest = (): HttpRequest => ({
 
 type SutTypes = {
   sut: SaveSurveyResultController
-  loadSurveyByIdStub: LoadSurveyById
-  saveSurveyResultStub: SaveSurveyResult
+  loadSurveyByIdSpy: LoadSurveyByIdSpy
+  saveSurveyResultSpy: SaveSurveyResultSpy
 }
 const makeSut = (): SutTypes => {
-  const saveSurveyResultStub = makeMockSaveSurveyResult()
-  const loadSurveyByIdStub = makeMockLoadSurveyById()
-  const sut = new SaveSurveyResultController(loadSurveyByIdStub,saveSurveyResultStub)
+  const saveSurveyResultSpy = new SaveSurveyResultSpy()
+  const loadSurveyByIdSpy = new LoadSurveyByIdSpy()
+  const sut = new SaveSurveyResultController(loadSurveyByIdSpy,saveSurveyResultSpy)
   return {
     sut,
-    loadSurveyByIdStub,
-    saveSurveyResultStub
+    loadSurveyByIdSpy,
+    saveSurveyResultSpy
   }
 }
 describe('SaveSurveyResultController', () => {
@@ -41,20 +40,19 @@ describe('SaveSurveyResultController', () => {
   })
   describe('LoadSurveyById', () => {
     test('Should call LoadSurveyById with correct id', async () => {
-      const { sut,loadSurveyByIdStub } = makeSut()
-      const loadByIdSpy = jest.spyOn(loadSurveyByIdStub,'loadById')
+      const { sut,loadSurveyByIdSpy } = makeSut()
       await sut.handle(makeMockRequest())
-      expect(loadByIdSpy).toHaveBeenCalledWith('any_survey_id')
+      expect(loadSurveyByIdSpy.id).toBe('any_survey_id')
     })
     test('Should return 403 LoadSurveyById returns null', async () => {
-      const { sut,loadSurveyByIdStub } = makeSut()
-      jest.spyOn(loadSurveyByIdStub,'loadById').mockReturnValueOnce(Promise.resolve(null))
+      const { sut,loadSurveyByIdSpy } = makeSut()
+      loadSurveyByIdSpy.result = null
       const httpResponse = await sut.handle(makeMockRequest())
       expect(httpResponse).toEqual(forbidenRequest(new InvalidParamError('surveyId')))
     })
     test('Should return 500 if LoadSurveyById throws', async () => {
-      const { sut,loadSurveyByIdStub } = makeSut()
-      jest.spyOn(loadSurveyByIdStub,'loadById').mockImplementationOnce(throwError)
+      const { sut,loadSurveyByIdSpy } = makeSut()
+      loadSurveyByIdSpy.loadById = throwError
       const httpResponse = await sut.handle(makeMockRequest())
       expect(httpResponse).toEqual(serverErrorRequest(new Error()))
     })
@@ -70,14 +68,13 @@ describe('SaveSurveyResultController', () => {
   })
   describe('SaveSurveyResult', () => {
     test('Should call SaveSurveyResult with correct values', async () => {
-      const { sut,saveSurveyResultStub } = makeSut()
-      const saveSpy = jest.spyOn(saveSurveyResultStub,'save')
+      const { sut,saveSurveyResultSpy } = makeSut()
       await sut.handle(makeMockRequest())
-      expect(saveSpy).toHaveBeenCalledWith(makeSaveSurveyResultParams())
+      expect(saveSurveyResultSpy.surveyResultData).toEqual(makeSaveSurveyResultParams())
     })
     test('Should return 500 if SaveSurveyResult throws', async () => {
-      const { sut,saveSurveyResultStub } = makeSut()
-      jest.spyOn(saveSurveyResultStub,'save').mockImplementationOnce(throwError)
+      const { sut,saveSurveyResultSpy } = makeSut()
+      saveSurveyResultSpy.save = throwError
       const httpResponse = await sut.handle(makeMockRequest())
       expect(httpResponse).toEqual(serverErrorRequest(new Error()))
     })

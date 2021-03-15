@@ -1,5 +1,4 @@
 import { LogControllerDecorator } from '@/main/decorators'
-import { Controller } from '@/presentation/protocols'
 import { serverErrorRequest } from '@/presentation/helpers'
 import { LogErrorRepositorySpy } from '@/tests/data-tests/mocks'
 import { ControllerSpy, makeMockRequest, makeMockResponse } from '@/tests/main-tests/mocks'
@@ -7,7 +6,7 @@ import { makeErrorMock } from '@/tests/domain-tests/mocks'
 
 type SutTypes = {
   sut: LogControllerDecorator
-  controllerSpy: Controller
+  controllerSpy: ControllerSpy
   logErrorRepositorySpy: LogErrorRepositorySpy
 }
 const makeSut = (): SutTypes => {
@@ -33,7 +32,7 @@ describe('LogController Decorator', () => {
   })
   test('Should call LogErrorRepository with correct error if controller return a server error', async () => {
     const { sut,controllerSpy,logErrorRepositorySpy } = makeSut()
-    jest.spyOn(controllerSpy,'handle').mockReturnValueOnce(Promise.resolve(serverErrorRequest(makeErrorMock())))
+    controllerSpy.result = serverErrorRequest(makeErrorMock())
     await sut.handle(makeMockRequest())
     expect(logErrorRepositorySpy.errorStack).toBe('any_stack')
   })

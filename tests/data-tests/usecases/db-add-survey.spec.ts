@@ -1,5 +1,5 @@
 import { DbAddSurvey } from '@/data/usecases'
-import { throwError, makeAddSurveyParams } from '@/tests/domain-tests/mocks'
+import { throwError, mockAddSurveyParams } from '@/tests/domain-tests/mocks'
 import { AddSurveyRepositorySpy } from '@/tests/data-tests/mocks'
 import MockDate from 'mockdate'
 
@@ -25,14 +25,14 @@ describe('DbAddSurvey Usecase', () => {
   })
   test('Should call AddSurveyRepository with correct values', async () => {
     const { sut, addSurveyRepositorySpy } = makeSut()
-    const surveyParams = makeAddSurveyParams()
+    const surveyParams = mockAddSurveyParams()
     await sut.add(surveyParams)
     expect(addSurveyRepositorySpy.surveyParams).toBe(surveyParams)
   })
   test('Should throw if AddSurveyRepository throws', async () => {
     const { sut, addSurveyRepositorySpy } = makeSut()
     addSurveyRepositorySpy.add = throwError
-    const resultPromise = sut.add(makeAddSurveyParams())
+    const resultPromise = sut.add(mockAddSurveyParams())
     await expect(resultPromise).rejects.toThrow()
   })
 })

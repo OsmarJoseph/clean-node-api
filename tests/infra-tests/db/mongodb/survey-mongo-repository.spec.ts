@@ -1,13 +1,19 @@
+import { AddSurveyParams } from '@/domain/usecases'
 import { SurveyMongoRepository } from '@/infra/db/mongodb/repositories'
-import { makeAddSurveyParams } from '@/tests/domain-tests/mocks'
+import { mockAddSurveyParams } from '@/tests/domain-tests/mocks'
 import { MongoHelper } from '@/infra/db/mongodb/helpers'
 import { getSurveysCollection, SurveysCollection } from '@/infra/db/mongodb/collections'
 
 let surveyCollection: SurveysCollection
 
-const insertMockSurveyOnDatabaseAndGetId = async (): Promise<string> => {
-  const survey = await surveyCollection.insertOne(makeAddSurveyParams())
-  return survey.ops[0]._id as unknown as string
+const insertMockSurveyOnDatabaseAndGetId = async (): Promise<{id: string,surveyParams: AddSurveyParams}> => {
+  const surveyParams = mockAddSurveyParams()
+  const survey = await surveyCollection.insertOne(surveyParams)
+
+  return {
+    id: survey.ops[0]._id as unknown as string,
+    surveyParams
+  }
 }
 
 const makeSut = (): SurveyMongoRepository => new SurveyMongoRepository()
@@ -27,7 +33,7 @@ describe('SurveyMongoRepository',() => {
   describe('add',() => {
     test('Should create a survey on success', async () => {
       const sut = makeSut()
-      await sut.add(makeAddSurveyParams())
+      await sut.add(mockAddSurveyParams())
       const savedSurvey = await surveyCollection.findOne({})
       expect(savedSurvey).toBeTruthy()
     })
@@ -39,15 +45,15 @@ describe('SurveyMongoRepository',() => {
       expect(surveysList.length).toBe(0)
     })
     test('Should load all surveys on success', async () => {
-      await insertMockSurveyOnDatabaseAndGetId()
-      await insertMockSurveyOnDatabaseAndGetId()
+      const { surveyParams,id } = await insertMockSurveyOnDatabaseAndGetId()
+      const { surveyParams: surveyParams1,id: id1 } = await insertMockSurveyOnDatabaseAndGetId()
       const sut = makeSut()
       const surveysList = await sut.loadAll()
       expect(surveysList.length).toBe(2)
-      expect(surveysList[0].question).toBe('any_question')
-      expect(surveysList[1].question).toBe('any_question')
-      expect(surveysList[0].id).toBeTruthy()
-      expect(surveysList[1].id).toBeTruthy()
+      expect(surveysList[0].question).toBe(surveyParams.question)
+      expect(surveysList[1].question).toBe(surveyParams1.question)
+      expect(surveysList[0].id).toEqual(id)
+      expect(surveysList[1].id).toEqual(id1)
     })
   })
   describe('loadById',() => {
@@ -58,11 +64,11 @@ describe('SurveyMongoRepository',() => {
       expect(survey).toBeFalsy()
     })
     test('Should return a survey on loadById success', async () => {
-      const usedId = await insertMockSurveyOnDatabaseAndGetId()
+      const { id } = await insertMockSurveyOnDatabaseAndGetId()
       const sut = makeSut()
-      const survey = await sut.loadById(usedId)
+      const survey = await sut.loadById(id)
       expect(survey).toBeTruthy()
-      expect(survey.id).toBeTruthy()
+      expect(survey.id).toEqual(id)
     })
   })
 })

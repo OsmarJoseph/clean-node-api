@@ -1,11 +1,11 @@
 import { AccountModel } from '@/domain/models'
 import { AddAccountParams } from '@/domain/usecases'
 import { AddAccountRepository , LoadAccountByEmailRepository , LoadAccountByTokenRepository , UpdateAccessTokenRepository } from '@/data/protocols'
-import { makeMockAccountModel } from '@/tests/domain-tests/mocks'
+import { mockAccountModel } from '@/tests/domain-tests/mocks'
 
 export class AddAccountRepositorySpy implements AddAccountRepository {
   params: AddAccountParams
-  result = makeMockAccountModel()
+  result = mockAccountModel()
 
   async add (params: AddAccountParams): Promise<AccountModel> {
     this.params = params
@@ -14,7 +14,7 @@ export class AddAccountRepositorySpy implements AddAccountRepository {
 }
 export class LoadAccountByEmailRepositorySpy implements LoadAccountByEmailRepository {
   email: string
-  result = makeMockAccountModel()
+  result = mockAccountModel()
 
   async loadByEmail (email: string): Promise<AccountModel> {
     this.email = email
@@ -25,7 +25,7 @@ export class LoadAccountByEmailRepositorySpy implements LoadAccountByEmailReposi
 export class LoadAccountByTokenRepositorySpy implements LoadAccountByTokenRepository {
   token: string
   role: string
-  result = makeMockAccountModel()
+  result = mockAccountModel()
 
   async loadByToken (token: string, role?: string): Promise<AccountModel> {
     this.token = token

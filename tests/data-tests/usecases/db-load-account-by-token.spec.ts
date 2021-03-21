@@ -1,5 +1,5 @@
 import { DbLoadAccountByToken } from '@/data/usecases'
-import { makeMockAccountModel, throwError } from '@/tests/domain-tests/mocks'
+import { throwError } from '@/tests/domain-tests/mocks'
 import { DecrypterSpy, LoadAccountByTokenRepositorySpy } from '@/tests/data-tests/mocks'
 import faker from 'faker'
 type SutTypes = {
@@ -41,20 +41,20 @@ describe('Db LoadAccount By Token Usecase', () => {
   })
   test('Should call LoadAccountByTokenRepository with correct values', async () => {
     const { sut,loadAccountByTokenRepositorySpy } = makeSut()
-    await sut.loadByToken('any_token','any_role')
-    expect(loadAccountByTokenRepositorySpy.token).toBe('any_token')
-    expect(loadAccountByTokenRepositorySpy.role).toBe('any_role')
+    await sut.loadByToken(token,role)
+    expect(loadAccountByTokenRepositorySpy.token).toBe(token)
+    expect(loadAccountByTokenRepositorySpy.role).toBe(role)
   })
   test('Should return null if LoadAccountByTokenRepository return null', async () => {
     const { sut,loadAccountByTokenRepositorySpy } = makeSut()
     loadAccountByTokenRepositorySpy.result = null
-    const account = await sut.loadByToken('any_token','any_role')
+    const account = await sut.loadByToken(token,role)
     expect(account).toBeNull()
   })
   test('Should return an account on success', async () => {
-    const { sut } = makeSut()
-    const account = await sut.loadByToken('any_token','any_role')
-    expect(account).toEqual(makeMockAccountModel())
+    const { sut,loadAccountByTokenRepositorySpy } = makeSut()
+    const account = await sut.loadByToken(token,role)
+    expect(account).toEqual(loadAccountByTokenRepositorySpy.result)
   })
   test('Should return null if Decrypter throws', async () => {
     const { sut,decrypterSpy } = makeSut()
@@ -65,7 +65,7 @@ describe('Db LoadAccount By Token Usecase', () => {
   test('Should throw if LoadAccountByTokenRepository throws', async () => {
     const { sut,loadAccountByTokenRepositorySpy } = makeSut()
     loadAccountByTokenRepositorySpy.loadByToken = throwError
-    const accountPromise = sut.loadByToken('any_token','any_role')
+    const accountPromise = sut.loadByToken(token,role)
     await expect(accountPromise).rejects.toThrow()
   })
 })

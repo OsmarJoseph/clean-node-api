@@ -1,6 +1,6 @@
 import { LoadSurveysController } from '@/presentation/controllers'
 import { okRequest, serverErrorRequest, noContentRequest } from '@/presentation/helpers'
-import { throwError, makeMockSurveysModelList } from '@/tests/domain-tests/mocks'
+import { throwError } from '@/tests/domain-tests/mocks'
 import { LoadSurveysSpy } from '@/tests/presentation-tests/mocks'
 import MockDate from 'mockdate'
 
@@ -35,9 +35,9 @@ describe('Load Suveys Controller',() => {
     expect(httpResponse).toEqual(noContentRequest())
   })
   test('Should return 200 on success', async () => {
-    const { sut } = makeSut()
+    const { sut,loadSurveysSpy } = makeSut()
     const httpResponse = await sut.handle({})
-    expect(httpResponse).toEqual(okRequest(makeMockSurveysModelList()))
+    expect(httpResponse).toEqual(okRequest(loadSurveysSpy.result))
   })
   test('Should return 500 if LoadSurveys throws', async () => {
     const { sut,loadSurveysSpy } = makeSut()

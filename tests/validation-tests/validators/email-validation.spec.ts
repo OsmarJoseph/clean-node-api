@@ -3,6 +3,8 @@ import { EMailValidatorSpy } from '@/tests/validation-tests/mocks'
 import { InvalidParamError } from '@/presentation/errors'
 import { throwError } from '@/tests/domain-tests/mocks'
 
+import faker from 'faker'
+
 type SutTypes = {
   sut: EmailValidation
   emailValidatorSpy: EMailValidatorSpy
@@ -19,14 +21,15 @@ describe('Email Validation',() => {
   test('Should return an error if EmailValidator returns false', () => {
     const { sut,emailValidatorSpy } = makeSut()
     emailValidatorSpy.isValid = () => false
-    const validationError = sut.validate({ email: 'any_mail@mail.com' })
+    const validationError = sut.validate({ email: faker.internet.email() })
     expect(validationError).toEqual(new InvalidParamError('email'))
   })
 
   test('Should call EmailValidator with correct email', () => {
     const { sut,emailValidatorSpy } = makeSut()
-    sut.validate({ email: 'any_mail@mail.com' })
-    expect(emailValidatorSpy.email).toBe('any_mail@mail.com')
+    const mockEmail = faker.internet.email()
+    sut.validate({ email: mockEmail })
+    expect(emailValidatorSpy.email).toBe(mockEmail)
   })
 
   test('Should throw if EmailValidator throws', () => {

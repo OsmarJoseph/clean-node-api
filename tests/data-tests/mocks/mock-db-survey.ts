@@ -1,6 +1,6 @@
 import { SurveyModel } from '@/domain/models'
 import { AddSurveyParams } from '@/domain/usecases'
-import { makeMockSurveyModel,makeMockSurveysModelList } from '@/tests/domain-tests/mocks'
+import { mockSurveyModel,mockSurveysModelList } from '@/tests/domain-tests/mocks'
 import { AddSurveyRepository , LoadSurveyByIdRepository , LoadSurveysRepository } from '@/data/protocols'
 
 export class AddSurveyRepositorySpy implements AddSurveyRepository {
@@ -12,7 +12,7 @@ export class AddSurveyRepositorySpy implements AddSurveyRepository {
 
 export class LoadSurveyByIdRepositorySpy implements LoadSurveyByIdRepository {
   id: string
-  result = makeMockSurveyModel()
+  result = mockSurveyModel()
   async loadById (id: string): Promise<SurveyModel> {
     this.id = id
     return this.result
@@ -21,7 +21,7 @@ export class LoadSurveyByIdRepositorySpy implements LoadSurveyByIdRepository {
 
 export class LoadSurveysRepositorySpy implements LoadSurveysRepository {
   callCount = 0
-  result = makeMockSurveysModelList()
+  result = mockSurveysModelList()
   async loadAll (): Promise<SurveyModel[]> {
     this.callCount++
     return this.result

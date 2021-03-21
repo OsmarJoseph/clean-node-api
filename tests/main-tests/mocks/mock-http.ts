@@ -1,13 +1,15 @@
 import { Controller, HttpRequest, HttpResponse } from '@/presentation/protocols'
 import { okRequest } from '@/presentation/helpers'
 
-export const makeMockResponse = (): HttpResponse =>
+import faker from 'faker'
+
+export const mockResponse = (): HttpResponse =>
   okRequest({
-    any_field: 'any_value'
+    any_field: faker.random.words()
   })
 
 export class ControllerSpy implements Controller {
-  result = makeMockResponse()
+  result = mockResponse()
   httpRequest: HttpRequest
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
     this.httpRequest = httpRequest
@@ -15,8 +17,8 @@ export class ControllerSpy implements Controller {
   }
 }
 
-export const makeMockRequest = (): HttpRequest => ({
+export const mockRequest = (): HttpRequest => ({
   body: {
-    any_field: 'any_value'
+    any_field: faker.random.words()
   }
 })

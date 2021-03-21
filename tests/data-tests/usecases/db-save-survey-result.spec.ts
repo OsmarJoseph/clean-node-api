@@ -1,5 +1,5 @@
 import { DbSaveSurveyResult } from '@/data/usecases'
-import { throwError,makeSaveSurveyResultParams,makeMockSurveyResultModel } from '@/tests/domain-tests/mocks'
+import { throwError,mockSaveSurveyResultParams } from '@/tests/domain-tests/mocks'
 import { SaveSurveyResultRepositorySpy,LoadSurveyResultRepositorySpy } from '@/tests/data-tests/mocks'
 import MockDate from 'mockdate'
 
@@ -32,14 +32,14 @@ describe('DbSaveSurveyResult Usecase', () => {
   describe('SaveSurveyResultRepository', () => {
     test('Should call SaveSurveyResultRepository with correct values', async () => {
       const { sut, saveSurveyResultRepositorySpy } = makeSut()
-      const surveyResultData = makeSaveSurveyResultParams()
+      const surveyResultData = mockSaveSurveyResultParams()
       await sut.save(surveyResultData)
       expect(saveSurveyResultRepositorySpy.surveyResultData).toBe(surveyResultData)
     })
     test('Should throw if SaveSurveyResultRepository throws', async () => {
       const { sut, saveSurveyResultRepositorySpy } = makeSut()
       saveSurveyResultRepositorySpy.save = throwError
-      const savePromise = sut.save(makeSaveSurveyResultParams())
+      const savePromise = sut.save(mockSaveSurveyResultParams())
       await expect(savePromise).rejects.toThrow()
     })
   })
@@ -47,24 +47,24 @@ describe('DbSaveSurveyResult Usecase', () => {
     test('Should call LoadSurveyResultRepository with correct values', async () => {
       const { sut, loadSurveyResultRepositorySpy } = makeSut()
 
-      const surveyResultData = makeSaveSurveyResultParams()
+      const surveyResultData = mockSaveSurveyResultParams()
       await sut.save(surveyResultData)
-      expect(loadSurveyResultRepositorySpy.surveyId).toBe('any_survey_id')
+      expect(loadSurveyResultRepositorySpy.surveyId).toBe(surveyResultData.surveyId)
     })
     test('Should throw if LoadSurveyResultRepository throws', async () => {
       const { sut, loadSurveyResultRepositorySpy } = makeSut()
       loadSurveyResultRepositorySpy.loadBySurveyId = throwError
-      const savePromise = sut.save(makeSaveSurveyResultParams())
+      const savePromise = sut.save(mockSaveSurveyResultParams())
       await expect(savePromise).rejects.toThrow()
     })
 
     describe('success', () => {
       test('Should return a surveyResult on success', async () => {
-        const { sut } = makeSut()
+        const { sut,loadSurveyResultRepositorySpy } = makeSut()
         const surveyResultResponse = await sut.save(
-          makeSaveSurveyResultParams()
+          mockSaveSurveyResultParams()
         )
-        expect(surveyResultResponse).toEqual(makeMockSurveyResultModel())
+        expect(surveyResultResponse).toEqual(loadSurveyResultRepositorySpy.result)
       })
     })
   })

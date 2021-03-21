@@ -1,7 +1,7 @@
 import { app } from '@/main/config/app'
 import { env } from '@/main/config/env'
 import { AccountModel } from '@/domain/models'
-import { makeMockAddAccountParams, makeAddSurveyParams } from '@/tests/domain-tests/mocks'
+import { mockAddAccountParams, mockAddSurveyParams } from '@/tests/domain-tests/mocks'
 import { MongoHelper } from '@/infra/db/mongodb/helpers'
 import { getAccountsCollection, AccountsCollection, getSurveysCollection, SurveysCollection } from '@/infra/db/mongodb/collections'
 import request from 'supertest'
@@ -10,7 +10,7 @@ import { sign } from 'jsonwebtoken'
 let surveyCollection: SurveysCollection
 let accountCollection: AccountsCollection
 const insertMockAccountOnDatabase = async (): Promise<AccountModel> => {
-  const newAccount = makeMockAddAccountParams() as AccountModel
+  const newAccount = mockAddAccountParams() as AccountModel
   const opResult = await accountCollection.insertOne(newAccount)
   return MongoHelper.map(opResult.ops[0])
 }
@@ -26,7 +26,7 @@ const addValidAccessToAccount = async (account: AccountModel,withRole: boolean):
 }
 
 const insertMockSurveysOnDatabase = async (): Promise<void> => {
-  await surveyCollection.insertMany([makeAddSurveyParams(),makeAddSurveyParams()])
+  await surveyCollection.insertMany([mockAddSurveyParams(),mockAddSurveyParams()])
 }
 
 describe('Survey Routes',() => {
@@ -48,7 +48,7 @@ describe('Survey Routes',() => {
     test('Should return 403 on add survey without accessToken',async () => {
       await request(app).post('/api/surveys')
         .send(
-          makeAddSurveyParams()
+          mockAddSurveyParams()
         )
         .expect(403)
     })
@@ -57,7 +57,7 @@ describe('Survey Routes',() => {
       const usedAccessToken = await addValidAccessToAccount(mockAccount,true)
       await request(app).post('/api/surveys').set('x-access-token',usedAccessToken)
         .send(
-          makeAddSurveyParams()
+          mockAddSurveyParams()
         )
         .expect(204)
     })
@@ -66,7 +66,7 @@ describe('Survey Routes',() => {
       const usedAccessToken = await addValidAccessToAccount(mockAccount,false)
       await request(app).post('/api/surveys').set('x-access-token',usedAccessToken)
         .send(
-          makeAddSurveyParams()
+          mockAddSurveyParams()
         )
         .expect(403)
     })

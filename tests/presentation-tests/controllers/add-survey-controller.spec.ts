@@ -1,7 +1,7 @@
 import { AddSurveyController } from '@/presentation/controllers'
 import { HttpRequest } from '@/presentation/protocols'
 import { badRequest, serverErrorRequest,noContentRequest } from '@/presentation/helpers'
-import { throwError, makeAddSurveyParams } from '@/tests/domain-tests/mocks'
+import { throwError, mockAddSurveyParams } from '@/tests/domain-tests/mocks'
 import { ValidationSpy } from '@/tests/validation-tests/mocks'
 import { AddSurveySpy } from '@/tests/presentation-tests/mocks'
 
@@ -25,7 +25,7 @@ const makeSut = (): SutTypes => {
 }
 const makeHttpRquest = (): HttpRequest => ({
   body: {
-    ...makeAddSurveyParams()
+    ...mockAddSurveyParams()
   }
 })
 describe('Add Survey Controller', () => {
@@ -51,6 +51,7 @@ describe('Add Survey Controller', () => {
     const { sut,addSurveySpy } = makeSut()
     const httpRequest = makeHttpRquest()
     await sut.handle(httpRequest)
+    httpRequest.body.date = new Date()
     expect(addSurveySpy.data).toEqual(httpRequest.body)
   })
   test('Should return 500 if AddSurvey throws', async () => {

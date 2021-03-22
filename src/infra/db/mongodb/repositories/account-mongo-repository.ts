@@ -1,8 +1,8 @@
 import { AccountModel } from '@/domain/models'
-import { AddAccountRepository , LoadAccountByEmailRepository , UpdateAccessTokenRepository , LoadAccountByTokenRepository } from '@/data/protocols'
+import { AddAccountRepository , LoadAccountByEmailRepository , UpdateAccessTokenRepository , LoadAccountIdByTokenRepository } from '@/data/protocols'
 import { MongoHelper } from '@/infra/db/mongodb/helpers/'
 import { getAccountsCollection } from '@/infra/db/mongodb/collections'
-export class AccountMongoRepository implements AddAccountRepository,LoadAccountByEmailRepository,UpdateAccessTokenRepository,LoadAccountByTokenRepository {
+export class AccountMongoRepository implements AddAccountRepository,LoadAccountByEmailRepository,UpdateAccessTokenRepository,LoadAccountIdByTokenRepository {
   async add (account: AddAccountRepository.Params): Promise<AddAccountRepository.Result> {
     const accountCollection = await getAccountsCollection()
 
@@ -21,10 +21,15 @@ export class AccountMongoRepository implements AddAccountRepository,LoadAccountB
     await accountCollection.updateOne({ _id: userId },{ $set: { accessToken: token } })
   }
 
-  async loadByToken (token: string,role?: string): Promise<AccountModel> {
+  async loadAccountIdByToken (token: string,role?: string): Promise<LoadAccountIdByTokenRepository.Result> {
     const accountCollection = await getAccountsCollection()
-    const account = await accountCollection.findOne({ accessToken: token, $or: [{ role: 'admin' },{ role }] })
-
-    return MongoHelper.map(account)
+    const accountId = await accountCollection.findOne(
+      {
+        accessToken: token,
+        $or: [{ role: 'admin' },{ role }]
+      },
+      { projection: { _id: 1 } }
+    )
+    return MongoHelper.map(accountId)?.id
   }
 }

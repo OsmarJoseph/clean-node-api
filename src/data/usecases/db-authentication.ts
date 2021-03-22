@@ -1,4 +1,4 @@
-import { Authentication, AuthenticationParams } from '@/domain/usecases'
+import { Authentication } from '@/domain/usecases'
 import { LoadAccountByEmailRepository, HashComparer, Encrypter, UpdateAccessTokenRepository } from '@/data/protocols'
 
 export class DbAuthentication implements Authentication {
@@ -9,7 +9,7 @@ export class DbAuthentication implements Authentication {
     private readonly updateAccessTokenRepository: UpdateAccessTokenRepository
   ) {}
 
-  async auth (authenticationParams: AuthenticationParams): Promise<string> {
+  async auth (authenticationParams: Authentication.Params): Promise<Authentication.Result> {
     const { loadAccountByEmailRepository, hashComparer,encrypter,updateAccessTokenRepository } = this
     const { email,password } = authenticationParams
     const account = await loadAccountByEmailRepository.loadByEmail(email)

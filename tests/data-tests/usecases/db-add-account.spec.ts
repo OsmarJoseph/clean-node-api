@@ -53,6 +53,13 @@ describe('DbAddAccount Usecase', () => {
     expect(addAccountRepositorySpy.params).toEqual(accountDataWithHashedPassword)
   })
 
+  test('Should return false if AddAccountRepository returns false', async () => {
+    const { sut, addAccountRepositorySpy } = makeSut()
+    addAccountRepositorySpy.result = false
+    const isValid = await sut.add(mockAddAccountParams())
+    expect(isValid).toBe(false)
+  })
+
   test('Should throw if AddAccountRepository throws error', async () => {
     const { sut, addAccountRepositorySpy } = makeSut()
     addAccountRepositorySpy.add = throwError

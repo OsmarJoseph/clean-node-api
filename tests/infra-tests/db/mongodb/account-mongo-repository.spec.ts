@@ -1,3 +1,4 @@
+import { AccountModel } from '@/domain/models'
 import { AddAccountRepository } from '@/data/protocols'
 import { mockAddAccountParams } from '@/tests/domain-tests/mocks'
 import { AccountMongoRepository } from '@/infra/db/mongodb/repositories'
@@ -9,7 +10,7 @@ import faker from 'faker'
 const makeSut = (): AccountMongoRepository => new AccountMongoRepository()
 
 let accountCollection: AccountsCollection
-const insertMockAccountOnDatabase = async (newAccount: AddAccountRepository.Params): Promise<AddAccountRepository.Result> => {
+const insertMockAccountOnDatabase = async (newAccount: AddAccountRepository.Params): Promise<AccountModel> => {
   const opResult = await accountCollection.insertOne(newAccount)
   return MongoHelper.map(opResult.ops[0])
 }
@@ -37,15 +38,11 @@ describe('Account Mongo Repository',() => {
     await accountCollection.deleteMany({})
   })
   describe('add',() => {
-    test('Should return an account on add success',async () => {
+    test('Should return true on add success',async () => {
       const sut = makeSut()
       const addAccountParams = mockAddAccountParams()
-      const account = await sut.add(addAccountParams)
-      expect(account).toBeTruthy()
-      expect(account.id).toBeTruthy()
-      expect(account.name).toBe(addAccountParams.name)
-      expect(account.email).toBe(addAccountParams.email)
-      expect(account.password).toBe(addAccountParams.password)
+      const isValid = await sut.add(addAccountParams)
+      expect(isValid).toBe(true)
     })
   })
   describe('loadByEmail',() => {

@@ -1,12 +1,12 @@
-import { AddSurveyParams } from '@/domain/usecases'
 import { SurveyMongoRepository } from '@/infra/db/mongodb/repositories'
 import { mockAddSurveyParams } from '@/tests/domain-tests/mocks'
 import { MongoHelper } from '@/infra/db/mongodb/helpers'
 import { getSurveysCollection, SurveysCollection } from '@/infra/db/mongodb/collections'
+import { AddSurveyRepository } from '@/data/protocols'
 
 let surveyCollection: SurveysCollection
 
-const insertMockSurveyOnDatabaseAndGetId = async (): Promise<{id: string,surveyParams: AddSurveyParams}> => {
+const insertMockSurveyOnDatabaseAndGetId = async (): Promise<{id: string,surveyParams: AddSurveyRepository.Params}> => {
   const surveyParams = mockAddSurveyParams()
   const survey = await surveyCollection.insertOne(surveyParams)
 

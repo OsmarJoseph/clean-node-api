@@ -1,6 +1,22 @@
 import { AddSurvey } from '@/domain/usecases'
-import { Controller, Validation, HttpRequest, HttpResponse } from '@/presentation/protocols'
-import { badRequest, serverErrorRequest, noContentRequest } from '@/presentation/helpers'
+import { Controller, Validation, HttpResponse } from '@/presentation/protocols'
+import {
+  badRequest,
+  serverErrorRequest,
+  noContentRequest
+} from '@/presentation/helpers'
+
+export namespace AddSurveyController {
+  export type Request = {
+    question: string
+    possibleAnswers: Answer[]
+  }
+
+  type Answer = {
+    image?: string
+    answer: string
+  }
+}
 
 export class AddSurveyController implements Controller {
   constructor (
@@ -8,15 +24,15 @@ export class AddSurveyController implements Controller {
     private readonly addSurvey: AddSurvey
   ) {}
 
-  async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
+  async handle (request: AddSurveyController.Request): Promise<HttpResponse> {
     try {
-      const { body } = httpRequest
-      const validationError = this.validation.validate(body)
+      const validationError = this.validation.validate(request)
       if (validationError) {
         return badRequest(validationError)
       }
-      const { question,possibleAnswers } = body
-      await this.addSurvey.add({ question,possibleAnswers, date: new Date() })
+      const { question, possibleAnswers } = request
+
+      await this.addSurvey.add({ question, possibleAnswers, date: new Date() })
       return noContentRequest()
     } catch (error) {
       return serverErrorRequest(error)

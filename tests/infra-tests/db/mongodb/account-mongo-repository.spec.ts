@@ -1,5 +1,4 @@
-import { AccountModel } from '@/domain/models'
-import { AddAccountParams } from '@/domain/usecases'
+import { AddAccountRepository } from '@/data/protocols'
 import { mockAddAccountParams } from '@/tests/domain-tests/mocks'
 import { AccountMongoRepository } from '@/infra/db/mongodb/repositories'
 import { MongoHelper } from '@/infra/db/mongodb/helpers'
@@ -10,7 +9,7 @@ import faker from 'faker'
 const makeSut = (): AccountMongoRepository => new AccountMongoRepository()
 
 let accountCollection: AccountsCollection
-const insertMockAccountOnDatabase = async (newAccount: AddAccountParams): Promise<AccountModel> => {
+const insertMockAccountOnDatabase = async (newAccount: AddAccountRepository.Params): Promise<AddAccountRepository.Result> => {
   const opResult = await accountCollection.insertOne(newAccount)
   return MongoHelper.map(opResult.ops[0])
 }

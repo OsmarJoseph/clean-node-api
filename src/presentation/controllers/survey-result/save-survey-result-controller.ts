@@ -1,4 +1,4 @@
-import { LoadSurveyById, SaveSurveyResult } from '@/domain/usecases'
+import { LoadAnswersBySurveyId, SaveSurveyResult } from '@/domain/usecases'
 import { Controller, HttpResponse } from '@/presentation/protocols'
 import {
   forbidenRequest,
@@ -17,7 +17,7 @@ export namespace SaveSurveyResultController {
 
 export class SaveSurveyResultController implements Controller {
   constructor (
-    private readonly loadSurveyById: LoadSurveyById,
+    private readonly loadAnswersBySurveyId: LoadAnswersBySurveyId,
     private readonly saveSurveyResult: SaveSurveyResult
   ) {}
 
@@ -27,14 +27,14 @@ export class SaveSurveyResultController implements Controller {
     try {
       const { answer, surveyId, accountId } = request
 
-      const loadedSurvey = await this.loadSurveyById.loadById(surveyId)
-      if (!loadedSurvey) {
+      const possibleAnswers = await this.loadAnswersBySurveyId.loadAnswers(surveyId)
+      if (!possibleAnswers.length) {
         return forbidenRequest(new InvalidParamError('surveyId'))
       }
-      const thisAnswerIsOnTheLoadedSurvey = loadedSurvey.possibleAnswers.some(
-        (surveyAnswer) => surveyAnswer.answer === answer
-      )
-      if (!thisAnswerIsOnTheLoadedSurvey) {
+
+      const isValidAnswer = possibleAnswers.includes(answer)
+
+      if (!isValidAnswer) {
         return forbidenRequest(new InvalidParamError('answer'))
       }
 

@@ -4,9 +4,11 @@ import { MongoHelper } from '@/infra/db/mongodb/helpers'
 import { getSurveysCollection, SurveysCollection } from '@/infra/db/mongodb/collections'
 import { AddSurveyRepository } from '@/data/protocols'
 
+import FakeObjectId from 'bson-objectid'
+
 let surveyCollection: SurveysCollection
 
-const insertMockSurveyOnDatabaseAndGetId = async (): Promise<{id: string,surveyParams: AddSurveyRepository.Params}> => {
+const insertMockSurveyOnDatabaseAndGetId = async (): Promise<{ id: string, surveyParams: AddSurveyRepository.Params }> => {
   const surveyParams = mockAddSurveyParams()
   const survey = await surveyCollection.insertOne(surveyParams)
 
@@ -17,7 +19,7 @@ const insertMockSurveyOnDatabaseAndGetId = async (): Promise<{id: string,surveyP
 }
 
 const makeSut = (): SurveyMongoRepository => new SurveyMongoRepository()
-describe('SurveyMongoRepository',() => {
+describe('SurveyMongoRepository', () => {
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL)
   })
@@ -30,7 +32,7 @@ describe('SurveyMongoRepository',() => {
     surveyCollection = await getSurveysCollection()
     await surveyCollection.deleteMany({})
   })
-  describe('add',() => {
+  describe('add', () => {
     test('Should create a survey on success', async () => {
       const sut = makeSut()
       await sut.add(mockAddSurveyParams())
@@ -38,15 +40,15 @@ describe('SurveyMongoRepository',() => {
       expect(savedSurvey).toBeTruthy()
     })
   })
-  describe('loadAll',() => {
+  describe('loadAll', () => {
     test('Should load a empty list if db is clean', async () => {
       const sut = makeSut()
       const surveysList = await sut.loadAll()
       expect(surveysList.length).toBe(0)
     })
     test('Should load all surveys on success', async () => {
-      const { surveyParams,id } = await insertMockSurveyOnDatabaseAndGetId()
-      const { surveyParams: surveyParams1,id: id1 } = await insertMockSurveyOnDatabaseAndGetId()
+      const { surveyParams, id } = await insertMockSurveyOnDatabaseAndGetId()
+      const { surveyParams: surveyParams1, id: id1 } = await insertMockSurveyOnDatabaseAndGetId()
       const sut = makeSut()
       const surveysList = await sut.loadAll()
       expect(surveysList.length).toBe(2)
@@ -56,10 +58,10 @@ describe('SurveyMongoRepository',() => {
       expect(surveysList[1].id).toEqual(id1)
     })
   })
-  describe('loadById',() => {
+  describe('loadById', () => {
     test('Should return null if loadById fails', async () => {
       const sut = makeSut()
-      const anyId = '53cb6b9b4f4ddef1ad47f943'
+      const anyId = new FakeObjectId().toHexString()
       const survey = await sut.loadById(anyId)
       expect(survey).toBeFalsy()
     })
@@ -69,6 +71,20 @@ describe('SurveyMongoRepository',() => {
       const survey = await sut.loadById(id)
       expect(survey).toBeTruthy()
       expect(survey.id).toEqual(id)
+    })
+  })
+  describe('checkById', () => {
+    test('Should return false if checkById fails', async () => {
+      const sut = makeSut()
+      const anyId = new FakeObjectId().toHexString()
+      const existsSurvey = await sut.checkById(anyId)
+      expect(existsSurvey).toBe(false)
+    })
+    test('Should return true on loadById success', async () => {
+      const { id } = await insertMockSurveyOnDatabaseAndGetId()
+      const sut = makeSut()
+      const existsSurvey = await sut.checkById(id)
+      expect(existsSurvey).toBe(true)
     })
   })
 })

@@ -94,7 +94,7 @@ describe('SaveSurveyResultController', () => {
       const answer = mockedRequest.answer
       assignAnswerToLoadAnswersBySurveyIdSpy(answer, loadSurveyByIdSpy)
       await sut.handle(mockedRequest)
-      expect(saveSurveyResultSpy.surveyResultData).toEqual({
+      expect(saveSurveyResultSpy.surveyResultParams).toEqual({
         surveyId: mockedRequest.surveyId,
         accountId: mockedRequest.accountId,
         answer,

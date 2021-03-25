@@ -1,4 +1,3 @@
-import { SurveyModel } from '@/domain/models'
 import { mockSurveyModel,mockSurveysModelList } from '@/tests/domain-tests/mocks'
 import { AddSurveyRepository , LoadSurveyByIdRepository , LoadSurveysRepository, CheckSurveyByIdRepository, LoadAnswersBySurveyIdRepository } from '@/data/protocols'
 
@@ -43,7 +42,7 @@ export class CheckSurveyByIdRepositorySpy implements CheckSurveyByIdRepository {
 export class LoadSurveysRepositorySpy implements LoadSurveysRepository {
   callCount = 0
   result = mockSurveysModelList()
-  async loadAll (): Promise<SurveyModel[]> {
+  async loadAll (): Promise<LoadSurveysRepository.Result> {
     this.callCount++
     return this.result
   }

@@ -1,4 +1,3 @@
-import { SurveyModel } from '@/domain/models'
 import { AddSurveyRepository , LoadSurveysRepository , LoadSurveyByIdRepository, CheckSurveyByIdRepository, LoadAnswersBySurveyIdRepository } from '@/data/protocols'
 import { MongoHelper, QueryBuilder } from '@/infra/db/mongodb/helpers'
 import { getSurveysCollection } from '@/infra/db/mongodb/collections'
@@ -9,7 +8,7 @@ export class SurveyMongoRepository implements AddSurveyRepository,LoadSurveysRep
     await surveyCollection.insertOne(surveyParams)
   }
 
-  async loadAll (): Promise<SurveyModel[]> {
+  async loadAll (): Promise<LoadSurveysRepository.Result> {
     const surveyCollection = await getSurveysCollection()
     const rawSurveysList = await surveyCollection.find().toArray()
     return MongoHelper.mapArray(rawSurveysList)

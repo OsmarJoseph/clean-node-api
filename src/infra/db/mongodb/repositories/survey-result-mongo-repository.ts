@@ -1,4 +1,3 @@
-import { SurveyResultModel } from '@/domain/models'
 import { SaveSurveyResultRepository , LoadSurveyResultRepository } from '@/data/protocols'
 import { getSurveyResultsCollection } from '@/infra/db/mongodb/collections'
 import { QueryBuilder } from '@/infra/db/mongodb/helpers'
@@ -172,7 +171,7 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository,L
       })
       .build()
     const queryApplied = surveyResultCollection.aggregate(query)
-    const surveyResult = await queryApplied.toArray() as unknown as SurveyResultModel[]
+    const surveyResult = await queryApplied.toArray() as unknown as LoadSurveyResultRepository.Result[]
     return surveyResult.length ? surveyResult[0] : null
   }
 }

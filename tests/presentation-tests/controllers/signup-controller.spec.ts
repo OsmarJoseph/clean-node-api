@@ -4,7 +4,7 @@ import {
   serverErrorRequest,
   forbidenRequest
 } from '@/presentation/helpers'
-import { throwError } from '@/tests/domain-tests/mocks'
+import { throwError } from '@/tests/helpers'
 import { ParamInUseError } from '@/presentation/errors/'
 import { SignUpController } from '@/presentation/controllers'
 import {

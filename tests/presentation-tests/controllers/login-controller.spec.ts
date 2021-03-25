@@ -5,7 +5,7 @@ import {
   okRequest
 } from '@/presentation/helpers'
 import { LoginController } from '@/presentation/controllers'
-import { throwError } from '@/tests/domain-tests/mocks'
+import { throwError } from '@/tests/helpers'
 import { AuthenticationSpy } from '@/tests/presentation-tests/mocks'
 import { ValidationSpy } from '@/tests/validation-tests/mocks'
 

@@ -1,5 +1,5 @@
 import { LoadSurveyResultController } from '@/presentation/controllers'
-import { throwError } from '@/tests/domain-tests/mocks'
+import { throwError } from '@/tests/helpers'
 import {
   CheckSurveyByIdSpy,
   LoadSurveyResultSpy

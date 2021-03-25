@@ -2,7 +2,7 @@ import { LogControllerDecorator } from '@/main/decorators'
 import { serverErrorRequest } from '@/presentation/helpers'
 import { LogErrorRepositorySpy } from '@/tests/data-tests/mocks'
 import { ControllerSpy } from '@/tests/main-tests/mocks'
-import { makeErrorMock } from '@/tests/domain-tests/mocks'
+import { makeErrorMock } from '@/tests/helpers'
 
 import faker from 'faker'
 

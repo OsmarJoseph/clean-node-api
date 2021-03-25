@@ -1,5 +1,5 @@
 import { JwtAdapter } from '@/infra/criptography'
-import { throwError } from '@/tests/domain-tests/mocks'
+import { throwError } from '@/tests/helpers'
 import jwt from 'jsonwebtoken'
 import faker from 'faker'
 

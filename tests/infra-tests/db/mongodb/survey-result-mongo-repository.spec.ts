@@ -1,6 +1,6 @@
 import { SurveyResultMongoRepository } from '@/infra/db/mongodb/repositories'
 import { SurveyModel , AccountModel , SurveyResultModel } from '@/domain/models'
-import { SaveSurveyResultParams } from '@/domain/usecases'
+import { SaveSurveyResultRepository } from '@/data/protocols'
 import { mockAddAccountParams, mockAddSurveyParams } from '@/tests/domain-tests/mocks'
 import { MongoHelper } from '@/infra/db/mongodb/helpers'
 import { getAccountsCollection,AccountsCollection, getSurveysCollection, SurveysCollection, getSurveyResultsCollection, SurveyResultsCollection } from '@/infra/db/mongodb/collections'
@@ -19,8 +19,8 @@ const insertMockAccountOnDatabase = async (): Promise<AccountModel> => {
   return MongoHelper.map(account.ops[0])
 }
 
-const insertMockSurveyResultOnDatabase = async (surveyResultData: SaveSurveyResultParams): Promise<SurveyResultModel> => {
-  const savedSurveyResult = await surveyResultCollection.insertOne(surveyResultData)
+const insertMockSurveyResultOnDatabase = async (surveyResultParams: SaveSurveyResultRepository.Params): Promise<SurveyResultModel> => {
+  const savedSurveyResult = await surveyResultCollection.insertOne(surveyResultParams)
   return MongoHelper.map(savedSurveyResult.ops[0])
 }
 

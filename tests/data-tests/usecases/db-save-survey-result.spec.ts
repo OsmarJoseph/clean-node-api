@@ -1,6 +1,7 @@
 import { DbSaveSurveyResult } from '@/data/usecases'
-import { throwError,mockSaveSurveyResultParams } from '@/tests/domain-tests/mocks'
+import { mockSaveSurveyResultParams } from '@/tests/domain-tests/mocks'
 import { SaveSurveyResultRepositorySpy,LoadSurveyResultRepositorySpy } from '@/tests/data-tests/mocks'
+import { throwError } from '@/tests/helpers'
 import MockDate from 'mockdate'
 
 type SutTypes = {

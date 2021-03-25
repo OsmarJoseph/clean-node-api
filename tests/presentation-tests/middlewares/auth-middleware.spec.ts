@@ -6,7 +6,7 @@ import {
 } from '@/presentation/helpers'
 import { AccessDeniedError } from '@/presentation/errors'
 import { LoadAccountIdByTokenSpy } from '@/tests/presentation-tests/mocks'
-import { throwError } from '@/tests/domain-tests/mocks'
+import { throwError } from '@/tests/helpers'
 
 import faker from 'faker'
 

@@ -4,7 +4,7 @@ import {
   serverErrorRequest,
   noContentRequest
 } from '@/presentation/helpers'
-import { throwError } from '@/tests/domain-tests/mocks'
+import { throwError } from '@/tests/helpers'
 import { ValidationSpy } from '@/tests/validation-tests/mocks'
 import { AddSurveySpy } from '@/tests/presentation-tests/mocks'
 

@@ -1,5 +1,5 @@
 import { DbLoadAnswersBySurveyId } from '@/data/usecases'
-import { throwError } from '@/tests/domain-tests/mocks'
+import { throwError } from '@/tests/helpers'
 import { LoadAnswersBySurveyIdRepositorySpy } from '@/tests/data-tests/mocks'
 import faker from 'faker'
 

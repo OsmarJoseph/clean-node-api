@@ -1,5 +1,9 @@
-import { LogModel } from '@/domain/models'
+export interface LogErrorRepository {
+  logError: (logErrorParams: LogErrorRepository.Params) => Promise<void>
+}
 
-export interface LogErrorRepository{
-  logError: (errorStack: string) => Promise<LogModel>
+export namespace LogErrorRepository {
+  export type Params = {
+    errorStack: string
+  }
 }

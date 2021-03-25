@@ -5,7 +5,7 @@ import {
   okRequest
 } from '@/presentation/helpers'
 import { InvalidParamError } from '@/presentation/errors'
-import { throwError } from '@/tests/domain-tests/mocks'
+import { throwError } from '@/tests/helpers'
 import {
   SaveSurveyResultSpy,
   LoadAnswersBySurveyIdSpy

@@ -59,7 +59,7 @@ describe('SurveyMongoRepository', () => {
     })
   })
   describe('loadById', () => {
-    test('Should return null if loadById fails', async () => {
+    test('Should return null if survey does not exists', async () => {
       const sut = makeSut()
       const anyId = new FakeObjectId().toHexString()
       const survey = await sut.loadById(anyId)
@@ -74,17 +74,31 @@ describe('SurveyMongoRepository', () => {
     })
   })
   describe('checkById', () => {
-    test('Should return false if checkById fails', async () => {
+    test('Should return false if survey does not exists', async () => {
       const sut = makeSut()
       const anyId = new FakeObjectId().toHexString()
       const existsSurvey = await sut.checkById(anyId)
       expect(existsSurvey).toBe(false)
     })
-    test('Should return true on loadById success', async () => {
+    test('Should return true on checkById success', async () => {
       const { id } = await insertMockSurveyOnDatabaseAndGetId()
       const sut = makeSut()
       const existsSurvey = await sut.checkById(id)
       expect(existsSurvey).toBe(true)
+    })
+  })
+  describe('loadAnswers', () => {
+    test('Should return empty array if survey does not exists', async () => {
+      const sut = makeSut()
+      const anyId = new FakeObjectId().toHexString()
+      const answers = await sut.loadAnswers(anyId)
+      expect(answers).toEqual([])
+    })
+    test('Should return answers array on loadAnswers success', async () => {
+      const { id,surveyParams } = await insertMockSurveyOnDatabaseAndGetId()
+      const sut = makeSut()
+      const answers = await sut.loadAnswers(id)
+      expect(answers).toEqual(surveyParams.possibleAnswers.map(({ answer }) => answer))
     })
   })
 })

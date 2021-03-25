@@ -1,7 +1,6 @@
 import { AddLogParams } from '@/domain/models'
-import { SaveSurveyResultParams } from '@/domain/usecases'
 import { MongoHelper } from '@/infra/db/mongodb/helpers'
-import { AddAccountRepository, AddSurveyRepository } from '@/data/protocols'
+import { AddAccountRepository, AddSurveyRepository, SaveSurveyResultRepository } from '@/data/protocols'
 import { Collection } from 'mongodb'
 
 export type AccountsCollection = Collection<AddAccountRepository.Params>
@@ -13,5 +12,5 @@ export const getSurveysCollection = async (): Promise<SurveysCollection> => awai
 export type ErrorCollection = Collection<AddLogParams>
 export const getErrorCollection = async (): Promise<ErrorCollection> => await MongoHelper.getCollection('errors')
 
-export type SurveyResultsCollection = Collection<SaveSurveyResultParams>
+export type SurveyResultsCollection = Collection<SaveSurveyResultRepository.Params>
 export const getSurveyResultsCollection = async (): Promise<SurveyResultsCollection> => await MongoHelper.getCollection('surveyResults')

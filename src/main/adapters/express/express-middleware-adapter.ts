@@ -1,8 +1,8 @@
 import { Middleware } from '@/presentation/protocols'
 import { Request, Response, NextFunction } from 'express'
 
-export const adaptMiddleware = (middleware: Middleware): (req: Request, res: Response) => void => {
-  const promiseResponse = () => async (req: Request, res: Response, next: NextFunction) => {
+export const adaptMiddleware = (middleware: Middleware) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     const request = {
       accessToken: req.headers?.['x-access-token'],
       ...(req.headers || {})
@@ -17,5 +17,4 @@ export const adaptMiddleware = (middleware: Middleware): (req: Request, res: Res
         .json({ error: httpResponse.body.message })
     }
   }
-  return promiseResponse
 }

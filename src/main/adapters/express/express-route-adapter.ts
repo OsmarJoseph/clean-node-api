@@ -1,8 +1,8 @@
 import { Controller } from '@/presentation/protocols'
 import { Request, Response } from 'express'
 
-export const adaptRoute = (controller: Controller): (req: Request, res: Response) => void => {
-  const promiseResponse = async (req: Request, res: Response): Promise<void> => {
+export const adaptRoute = (controller: Controller) => {
+  return async (req: Request, res: Response) => {
     const request = {
       ...(req.body || {}),
       ...(req.params || {}),
@@ -16,5 +16,4 @@ export const adaptRoute = (controller: Controller): (req: Request, res: Response
       res.status(statusCode).json({ error: body?.message })
     }
   }
-  return promiseResponse
 }

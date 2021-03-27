@@ -1,23 +1,12 @@
-import { resolvers } from '@/main/graphql/resolvers'
-import { typeDefs } from '@/main/graphql/type-defs'
-
-import { ApolloServer } from 'apollo-server-express'
 import { GraphQLResponse } from 'apollo-server-types'
-import { Express } from 'express'
+import { PluginDefinition } from 'apollo-server-core'
 import { GraphQLError } from 'graphql'
 
-export const setupApolloServer = (app: Express): void => {
-  const server = new ApolloServer({
-    resolvers,
-    typeDefs,
-    plugins: [{
-      requestDidStart: () => ({
-        willSendResponse: ({ response,errors }) => handleErrors(response, errors)
-      })
-    }]
+export const plugins: PluginDefinition[] = [{
+  requestDidStart: () => ({
+    willSendResponse: ({ response,errors }) => handleErrors(response, errors)
   })
-  server.applyMiddleware({ app })
-}
+}]
 
 const errorsMap = new Map([
   ['UserInputError',{ statusCode: 400 }],

@@ -5,7 +5,7 @@ export const adaptResolver = async (controller: Controller,args?: any): Promise<
   const request = { ...(args || {}) }
   const httpResponse = await controller.handle(request)
   const { statusCode, body } = httpResponse
-  const { message: errorMessage } = body
+  const errorMessage = body?.mesage
 
   switch (statusCode) {
     case 200: case 204: return body

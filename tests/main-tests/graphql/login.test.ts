@@ -54,4 +54,44 @@ describe('Login GraphQL', () => {
       expect(res.errors[0].message).toBe('Unauthorized access')
     })
   })
+  describe('signUp Mutation', () => {
+    const signUpMutation = gql`
+    mutation signUp($name:String!,$email:String!,$password:String!,$passwordConfirmation:String!){
+      signUp(name:$name,email:$email,password:$password,passwordConfirmation:$passwordConfirmation) {
+        accessToken
+      }
+    }`
+
+    test('should create an Account on valid data', async () => {
+      const { mutate } = createTestClient({ apolloServer })
+      const res: any = await mutate(signUpMutation,{
+        variables: {
+          name: 'Osmar',
+          email: 'osmarjoseph2013@hotmail.com',
+          password: '123',
+          passwordConfirmation: '123'
+        }
+      })
+      expect(res.data.signUp.accessToken).toBeTruthy()
+    })
+    test('should return EmailInUseError on email in use', async () => {
+      const usedEmail = 'osmarjoseph2013@hotmail.com'
+      await accountCollection.insertOne({
+        name: 'Osmar',
+        email: usedEmail,
+        password: '1234'
+      })
+      const { mutate } = createTestClient({ apolloServer })
+      const res: any = await mutate(signUpMutation,{
+        variables: {
+          name: 'Osmar Joseph',
+          email: usedEmail,
+          password: '123',
+          passwordConfirmation: '123'
+        }
+      })
+      expect(res.data).toBeFalsy()
+      expect(res.errors[0].message).toBe('The received email is already in use')
+    })
+  })
 })

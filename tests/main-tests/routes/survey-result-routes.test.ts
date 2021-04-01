@@ -1,37 +1,13 @@
-import { AccountModel } from '@/domain/models'
-import { mockAddAccountParams, mockAddSurveyParams } from '@/tests/domain-tests/mocks'
 import { app } from '@/main/config/app'
-import { env } from '@/main/config/env'
 import { MongoHelper } from '@/infra/db/mongodb/helpers'
 import { AccountsCollection, getAccountsCollection, SurveysCollection, getSurveysCollection } from '@/infra/db/mongodb/collections'
+import { addValidAccessToAccount, insertMockAccountOnDatabase, insertMockSurveyOnDatabase } from '@/tests/infra-tests/mocks'
 
 import request from 'supertest'
 import faker from 'faker'
-import { sign } from 'jsonwebtoken'
 
 let accountCollection: AccountsCollection
-let surveyCollection: SurveysCollection
-const insertMockAccountOnDatabase = async (): Promise<AccountModel> => {
-  const opResult = await accountCollection.insertOne(mockAddAccountParams())
-  return MongoHelper.map(opResult.ops[0])
-}
-const addValidAccessToAccount = async (account: AccountModel): Promise<string> => {
-  const accessToken = sign({ id: account.id }, env.jwtSecret)
-  await accountCollection.updateOne({ _id: account.id },{ $set: { accessToken } })
-  return accessToken
-}
-
-const insertMockSurveyOnDatabase = async (): Promise<{
-  surveyId: string
-  possibleAnswer: string
-}> => {
-  const surveyParams = mockAddSurveyParams()
-  const survey = await surveyCollection.insertOne(surveyParams)
-  return {
-    surveyId: survey.ops[0]._id as unknown as string,
-    possibleAnswer: surveyParams.possibleAnswers[0].answer
-  }
-}
+let surveysCollection: SurveysCollection
 
 describe('Survey Result Routes',() => {
   beforeAll(async () => {
@@ -43,15 +19,15 @@ describe('Survey Result Routes',() => {
   })
 
   beforeEach(async () => {
-    surveyCollection = await getSurveysCollection()
-    await surveyCollection.deleteMany({})
+    surveysCollection = await getSurveysCollection()
+    await surveysCollection.deleteMany({})
     accountCollection = await getAccountsCollection()
     await accountCollection.deleteMany({})
   })
 
   describe('PUT /surveys/:surveyId/results',() => {
     test('Should return 403 on save survey result without accessToken',async () => {
-      const { surveyId } = await insertMockSurveyOnDatabase()
+      const { id: surveyId } = await insertMockSurveyOnDatabase(surveysCollection)
       await request(app)
         .put(`/api/surveys/${surveyId}/results`)
         .send({
@@ -60,9 +36,9 @@ describe('Survey Result Routes',() => {
         .expect(403)
     })
     test('Should return 200 on save survey result success',async () => {
-      const mockAccount = await insertMockAccountOnDatabase()
-      const usedAccessToken = await addValidAccessToAccount(mockAccount)
-      const { surveyId,possibleAnswer } = await insertMockSurveyOnDatabase()
+      const mockAccount = await insertMockAccountOnDatabase(accountCollection)
+      const usedAccessToken = await addValidAccessToAccount({ account: mockAccount,accountCollection })
+      const { id: surveyId,possibleAnswers: [{ answer: possibleAnswer }] } = await insertMockSurveyOnDatabase(surveysCollection)
 
       await request(app)
         .put(`/api/surveys/${surveyId}/results`)
@@ -82,9 +58,9 @@ describe('Survey Result Routes',() => {
         .expect(403)
     })
     test('Should return 200 on load survey result success',async () => {
-      const mockAccount = await insertMockAccountOnDatabase()
-      const usedAccessToken = await addValidAccessToAccount(mockAccount)
-      const { surveyId } = await insertMockSurveyOnDatabase()
+      const mockAccount = await insertMockAccountOnDatabase(accountCollection)
+      const usedAccessToken = await addValidAccessToAccount({ account: mockAccount,accountCollection })
+      const { id: surveyId } = await insertMockSurveyOnDatabase(surveysCollection)
 
       await request(app)
         .get(`/api/surveys/${surveyId}/results`)

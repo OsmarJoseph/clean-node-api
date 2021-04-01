@@ -1,10 +1,13 @@
 import { makeFakeApolloServer } from './helpers'
 import { AccountsCollection, getAccountsCollection } from '@/infra/db/mongodb/collections'
 import { MongoHelper } from '@/infra/db/mongodb/helpers'
+import { insertMockAccountOnDatabase } from '@/tests/infra-tests/mocks'
+import { mockAccountParams } from '@/tests/domain-tests/mocks'
 
 import { hash } from 'bcrypt'
 import { createTestClient } from 'apollo-server-integration-testing'
 import { ApolloServer, gql } from 'apollo-server-express'
+import faker from 'faker'
 
 let accountCollection: AccountsCollection
 let apolloServer: ApolloServer
@@ -31,24 +34,20 @@ describe('Login GraphQL', () => {
     }`
 
     test('should return an Account on valid credentials', async () => {
-      const fakePassword = '123'
-      const password = await hash(fakePassword,12)
-      const fakeEmail = 'osmarjoseph2013@hotmail.com'
-      await accountCollection.insertOne({
-        name: 'Osmar',
-        email: fakeEmail,
-        password
-      })
+      const mockPassword = faker.internet.password()
+      const hashedPassword = await hash(mockPassword,12)
+      const { email } = await insertMockAccountOnDatabase(accountCollection, { password: hashedPassword })
+
       const { query } = createTestClient({ apolloServer })
       const res: any = await query(loginQuery,{
-        variables: { email: fakeEmail, password: fakePassword }
+        variables: { email: email, password: mockPassword }
       })
       expect(res.data.login.accessToken).toBeTruthy()
     })
     test('should return UnauthorizedError on invalid credentials', async () => {
       const { query } = createTestClient({ apolloServer })
       const res: any = await query(loginQuery,{
-        variables: { email: 'osmarjoseph2013@hotmail.com', password: '123' }
+        variables: { email: faker.internet.email(), password: faker.internet.password() }
       })
       expect(res.data).toBeFalsy()
       expect(res.errors[0].message).toBe('Unauthorized access')
@@ -66,28 +65,20 @@ describe('Login GraphQL', () => {
       const { mutate } = createTestClient({ apolloServer })
       const res: any = await mutate(signUpMutation,{
         variables: {
-          name: 'Osmar',
-          email: 'osmarjoseph2013@hotmail.com',
-          password: '123',
-          passwordConfirmation: '123'
+          ...mockAccountParams()
         }
       })
       expect(res.data.signUp.accessToken).toBeTruthy()
     })
     test('should return EmailInUseError on email in use', async () => {
-      const usedEmail = 'osmarjoseph2013@hotmail.com'
-      await accountCollection.insertOne({
-        name: 'Osmar',
-        email: usedEmail,
-        password: '1234'
-      })
+      const usedEmail = faker.internet.email()
+      await insertMockAccountOnDatabase(accountCollection, { email: usedEmail })
+
       const { mutate } = createTestClient({ apolloServer })
       const res: any = await mutate(signUpMutation,{
         variables: {
-          name: 'Osmar Joseph',
-          email: usedEmail,
-          password: '123',
-          passwordConfirmation: '123'
+          ...mockAccountParams(),
+          email: usedEmail
         }
       })
       expect(res.data).toBeFalsy()

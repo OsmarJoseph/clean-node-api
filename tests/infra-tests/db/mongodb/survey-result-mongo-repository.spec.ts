@@ -1,28 +1,11 @@
 import { SurveyResultMongoRepository } from '@/infra/db/mongodb/repositories'
-import { SurveyModel , AccountModel , SurveyResultModel } from '@/domain/models'
-import { SaveSurveyResultRepository } from '@/data/protocols'
-import { mockAddAccountParams, mockAddSurveyParams } from '@/tests/domain-tests/mocks'
 import { MongoHelper } from '@/infra/db/mongodb/helpers'
 import { getAccountsCollection,AccountsCollection, getSurveysCollection, SurveysCollection, getSurveyResultsCollection, SurveyResultsCollection } from '@/infra/db/mongodb/collections'
+import { insertMockSurveyOnDatabase,insertMockAccountOnDatabase , insertMockSurveyResultOnDatabase } from '@/tests/infra-tests/mocks'
 
-let surveyCollection: SurveysCollection
+let surveysCollection: SurveysCollection
 let surveyResultCollection: SurveyResultsCollection
-let accountCollection: AccountsCollection
-
-const insertMockSurveyOnDatabase = async (): Promise<SurveyModel> => {
-  const survey = await surveyCollection.insertOne(mockAddSurveyParams())
-  return MongoHelper.map(survey.ops[0])
-}
-
-const insertMockAccountOnDatabase = async (): Promise<AccountModel> => {
-  const account = await accountCollection.insertOne(mockAddAccountParams())
-  return MongoHelper.map(account.ops[0])
-}
-
-const insertMockSurveyResultOnDatabase = async (surveyResultParams: SaveSurveyResultRepository.Params): Promise<SurveyResultModel> => {
-  const savedSurveyResult = await surveyResultCollection.insertOne(surveyResultParams)
-  return MongoHelper.map(savedSurveyResult.ops[0])
-}
+let accountsCollection: AccountsCollection
 
 const makeSut = (): SurveyResultMongoRepository => new SurveyResultMongoRepository()
 
@@ -36,20 +19,20 @@ describe('SurveyResultMongoRespository',() => {
   })
 
   beforeEach(async () => {
-    surveyCollection = await getSurveysCollection()
-    await surveyCollection.deleteMany({})
+    surveysCollection = await getSurveysCollection()
+    await surveysCollection.deleteMany({})
 
     surveyResultCollection = await getSurveyResultsCollection()
     await surveyResultCollection.deleteMany({})
 
-    accountCollection = await getAccountsCollection()
-    await accountCollection.deleteMany({})
+    accountsCollection = await getAccountsCollection()
+    await accountsCollection.deleteMany({})
   })
   describe('save',() => {
     test('Should save a survey result if its new', async () => {
-      const survey = await insertMockSurveyOnDatabase()
+      const survey = await insertMockSurveyOnDatabase(surveysCollection)
       const { id: surveyId } = survey
-      const account = await insertMockAccountOnDatabase()
+      const account = await insertMockAccountOnDatabase(accountsCollection)
       const { id: accountId } = account
       const sut = makeSut()
       const usedAnswer = survey.possibleAnswers[0].answer
@@ -69,9 +52,9 @@ describe('SurveyResultMongoRespository',() => {
       expect(savedSurveyResult).toBeTruthy()
     })
     test('Should update a survey result if its not new', async () => {
-      const survey = await insertMockSurveyOnDatabase()
+      const survey = await insertMockSurveyOnDatabase(surveysCollection)
       const { id: surveyId } = survey
-      const account = await insertMockAccountOnDatabase()
+      const account = await insertMockAccountOnDatabase(accountsCollection)
       const { id: accountId } = account
       const sut = makeSut()
       const usedAnswer = survey.possibleAnswers[1].answer
@@ -81,7 +64,7 @@ describe('SurveyResultMongoRespository',() => {
         answer: usedAnswer,
         date: new Date()
       }
-      await insertMockSurveyResultOnDatabase({ ...surveyResultParams })
+      await insertMockSurveyResultOnDatabase({ ...surveyResultParams },surveyResultCollection)
       const updatedAnswer = survey.possibleAnswers[1].answer
       await sut.save(
         { ...surveyResultParams,answer: updatedAnswer }
@@ -97,9 +80,9 @@ describe('SurveyResultMongoRespository',() => {
   })
   describe('loadBySurveyId', () => {
     test('should return a surveyResult on LoadBySurveyId',async () => {
-      const survey = await insertMockSurveyOnDatabase()
+      const survey = await insertMockSurveyOnDatabase(surveysCollection)
       const { id: surveyId } = survey
-      const account = await insertMockAccountOnDatabase()
+      const account = await insertMockAccountOnDatabase(accountsCollection)
       const sut = makeSut()
       const firstUsedAnswer = survey.possibleAnswers[0].answer
       const secondUsedAnswer = survey.possibleAnswers[1].answer
@@ -109,10 +92,10 @@ describe('SurveyResultMongoRespository',() => {
         answer: firstUsedAnswer,
         date: new Date()
       }
-      await insertMockSurveyResultOnDatabase({ ...surveyResultParams })
-      await insertMockSurveyResultOnDatabase({ ...surveyResultParams })
-      await insertMockSurveyResultOnDatabase({ ...surveyResultParams,answer: secondUsedAnswer })
-      await insertMockSurveyResultOnDatabase({ ...surveyResultParams,answer: secondUsedAnswer })
+      await insertMockSurveyResultOnDatabase({ ...surveyResultParams },surveyResultCollection)
+      await insertMockSurveyResultOnDatabase({ ...surveyResultParams },surveyResultCollection)
+      await insertMockSurveyResultOnDatabase({ ...surveyResultParams,answer: secondUsedAnswer },surveyResultCollection)
+      await insertMockSurveyResultOnDatabase({ ...surveyResultParams,answer: secondUsedAnswer },surveyResultCollection)
       const loadedSurveyResult = await sut.loadBySurveyId(surveyId)
       expect(loadedSurveyResult).toBeTruthy()
       const [firstAnswer,secondAnswer] = loadedSurveyResult.answers
@@ -125,7 +108,7 @@ describe('SurveyResultMongoRespository',() => {
       expect(secondAnswer.percent).toBe(50)
     })
     test('should return null on LoadBySurveyId if there is no survey result related to surveyId',async () => {
-      const survey = await insertMockSurveyOnDatabase()
+      const survey = await insertMockSurveyOnDatabase(surveysCollection)
       const { id: surveyId } = survey
       const sut = makeSut()
       const loadedSurveyResult = await sut.loadBySurveyId(surveyId)

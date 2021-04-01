@@ -2,21 +2,11 @@ import { SurveyMongoRepository } from '@/infra/db/mongodb/repositories'
 import { mockAddSurveyParams } from '@/tests/domain-tests/mocks'
 import { MongoHelper } from '@/infra/db/mongodb/helpers'
 import { getSurveysCollection, SurveysCollection } from '@/infra/db/mongodb/collections'
-import { AddSurveyRepository } from '@/data/protocols'
+import { insertMockSurveyOnDatabase } from '@/tests/infra-tests/mocks'
 
 import FakeObjectId from 'bson-objectid'
 
-let surveyCollection: SurveysCollection
-
-const insertMockSurveyOnDatabaseAndGetId = async (): Promise<{ id: string, surveyParams: AddSurveyRepository.Params }> => {
-  const surveyParams = mockAddSurveyParams()
-  const survey = await surveyCollection.insertOne(surveyParams)
-
-  return {
-    id: survey.ops[0]._id as unknown as string,
-    surveyParams
-  }
-}
+let surveysCollection: SurveysCollection
 
 const makeSut = (): SurveyMongoRepository => new SurveyMongoRepository()
 describe('SurveyMongoRepository', () => {
@@ -29,14 +19,14 @@ describe('SurveyMongoRepository', () => {
   })
 
   beforeEach(async () => {
-    surveyCollection = await getSurveysCollection()
-    await surveyCollection.deleteMany({})
+    surveysCollection = await getSurveysCollection()
+    await surveysCollection.deleteMany({})
   })
   describe('add', () => {
     test('Should create a survey on success', async () => {
       const sut = makeSut()
       await sut.add(mockAddSurveyParams())
-      const savedSurvey = await surveyCollection.findOne({})
+      const savedSurvey = await surveysCollection.findOne({})
       expect(savedSurvey).toBeTruthy()
     })
   })
@@ -47,13 +37,13 @@ describe('SurveyMongoRepository', () => {
       expect(surveysList.length).toBe(0)
     })
     test('Should load all surveys on success', async () => {
-      const { surveyParams, id } = await insertMockSurveyOnDatabaseAndGetId()
-      const { surveyParams: surveyParams1, id: id1 } = await insertMockSurveyOnDatabaseAndGetId()
+      const { question, id } = await insertMockSurveyOnDatabase(surveysCollection)
+      const { question: question1, id: id1 } = await insertMockSurveyOnDatabase(surveysCollection)
       const sut = makeSut()
       const surveysList = await sut.loadAll()
       expect(surveysList.length).toBe(2)
-      expect(surveysList[0].question).toBe(surveyParams.question)
-      expect(surveysList[1].question).toBe(surveyParams1.question)
+      expect(surveysList[0].question).toBe(question)
+      expect(surveysList[1].question).toBe(question1)
       expect(surveysList[0].id).toEqual(id)
       expect(surveysList[1].id).toEqual(id1)
     })
@@ -66,7 +56,7 @@ describe('SurveyMongoRepository', () => {
       expect(survey).toBeFalsy()
     })
     test('Should return a survey on loadById success', async () => {
-      const { id } = await insertMockSurveyOnDatabaseAndGetId()
+      const { id } = await insertMockSurveyOnDatabase(surveysCollection)
       const sut = makeSut()
       const survey = await sut.loadById(id)
       expect(survey).toBeTruthy()
@@ -81,7 +71,7 @@ describe('SurveyMongoRepository', () => {
       expect(existsSurvey).toBe(false)
     })
     test('Should return true on checkById success', async () => {
-      const { id } = await insertMockSurveyOnDatabaseAndGetId()
+      const { id } = await insertMockSurveyOnDatabase(surveysCollection)
       const sut = makeSut()
       const existsSurvey = await sut.checkById(id)
       expect(existsSurvey).toBe(true)
@@ -95,10 +85,10 @@ describe('SurveyMongoRepository', () => {
       expect(answers).toEqual([])
     })
     test('Should return answers array on loadAnswers success', async () => {
-      const { id,surveyParams } = await insertMockSurveyOnDatabaseAndGetId()
+      const { id,possibleAnswers } = await insertMockSurveyOnDatabase(surveysCollection)
       const sut = makeSut()
       const answers = await sut.loadAnswers(id)
-      expect(answers).toEqual(surveyParams.possibleAnswers.map(({ answer }) => answer))
+      expect(answers).toEqual(possibleAnswers.map(({ answer }) => answer))
     })
   })
 })

@@ -1,3 +1,4 @@
+import { context } from '@/main/config/apollo-server/context'
 import { schemaDirectives } from '@/main/graphql/directives'
 import { resolvers } from '@/main/graphql/resolvers'
 import { typeDefs } from '@/main/graphql/type-defs'
@@ -7,6 +8,7 @@ export const makeFakeApolloServer = (): ApolloServer => {
   return new ApolloServer({
     typeDefs,
     resolvers,
-    schemaDirectives
+    schemaDirectives,
+    context
   })
 }

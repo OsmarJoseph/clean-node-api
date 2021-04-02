@@ -8,7 +8,7 @@ import { mockAccountParams } from '@/tests/domain-tests/mocks'
 import faker from 'faker'
 import { hash } from 'bcrypt'
 
-let accountCollection: AccountsCollection
+let accountsCollection: AccountsCollection
 describe('Login Routes',() => {
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL)
@@ -19,8 +19,8 @@ describe('Login Routes',() => {
   })
 
   beforeEach(async () => {
-    accountCollection = await getAccountsCollection()
-    await accountCollection.deleteMany({})
+    accountsCollection = await getAccountsCollection()
+    await accountsCollection.deleteMany({})
   })
   describe('POST /signup',() => {
     test('Should return 200 on signup success',async () => {
@@ -34,7 +34,7 @@ describe('Login Routes',() => {
     test('Should return 200 on login success',async () => {
       const mockPassword = faker.internet.password()
       const hashedPassword = await hash(mockPassword,12)
-      const { email } = await insertMockAccountOnDatabase(accountCollection, { password: hashedPassword })
+      const { email } = await insertMockAccountOnDatabase(accountsCollection, { password: hashedPassword })
 
       await request(app).post('/api/login')
         .send({

@@ -9,7 +9,7 @@ import { createTestClient } from 'apollo-server-integration-testing'
 import { ApolloServer, gql } from 'apollo-server-express'
 import faker from 'faker'
 
-let accountCollection: AccountsCollection
+let accountsCollection: AccountsCollection
 let apolloServer: ApolloServer
 describe('Login GraphQL', () => {
   beforeAll(async () => {
@@ -22,8 +22,8 @@ describe('Login GraphQL', () => {
   })
 
   beforeEach(async () => {
-    accountCollection = await getAccountsCollection()
-    await accountCollection.deleteMany({})
+    accountsCollection = await getAccountsCollection()
+    await accountsCollection.deleteMany({})
   })
   describe('Login Query', () => {
     const loginQuery = gql`
@@ -36,7 +36,7 @@ describe('Login GraphQL', () => {
     test('should return an Account on valid credentials', async () => {
       const mockPassword = faker.internet.password()
       const hashedPassword = await hash(mockPassword,12)
-      const { email } = await insertMockAccountOnDatabase(accountCollection, { password: hashedPassword })
+      const { email } = await insertMockAccountOnDatabase(accountsCollection, { password: hashedPassword })
 
       const { query } = createTestClient({ apolloServer })
       const res: any = await query(loginQuery,{
@@ -72,7 +72,7 @@ describe('Login GraphQL', () => {
     })
     test('should return EmailInUseError on email in use', async () => {
       const usedEmail = faker.internet.email()
-      await insertMockAccountOnDatabase(accountCollection, { email: usedEmail })
+      await insertMockAccountOnDatabase(accountsCollection, { email: usedEmail })
 
       const { mutate } = createTestClient({ apolloServer })
       const res: any = await mutate(signUpMutation,{

@@ -8,8 +8,8 @@ export const getAccountsCollection = async (): Promise<AccountsCollection> => aw
 export type SurveysCollection = Collection<AddSurveyRepository.Params>
 export const getSurveysCollection = async (): Promise<SurveysCollection> => await MongoHelper.getCollection('surveys')
 
-export type ErrorCollection = Collection<LogErrorRepository.Params & {date: Date}>
-export const getErrorCollection = async (): Promise<ErrorCollection> => await MongoHelper.getCollection('errors')
+export type ErrorsCollection = Collection<LogErrorRepository.Params & {date: Date}>
+export const getErrorsCollection = async (): Promise<ErrorsCollection> => await MongoHelper.getCollection('errors')
 
 export type SurveyResultsCollection = Collection<SaveSurveyResultRepository.Params>
 export const getSurveyResultsCollection = async (): Promise<SurveyResultsCollection> => await MongoHelper.getCollection('surveyResults')

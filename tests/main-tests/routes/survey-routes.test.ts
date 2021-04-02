@@ -6,7 +6,7 @@ import { addValidAccessToAccount, insertMockAccountOnDatabase, insertMockSurveyO
 import request from 'supertest'
 
 let surveysCollection: SurveysCollection
-let accountCollection: AccountsCollection
+let accountsCollection: AccountsCollection
 
 describe('Survey Routes',() => {
   beforeAll(async () => {
@@ -20,8 +20,8 @@ describe('Survey Routes',() => {
   beforeEach(async () => {
     surveysCollection = await getSurveysCollection()
     await surveysCollection.deleteMany({})
-    accountCollection = await getAccountsCollection()
-    await accountCollection.deleteMany({})
+    accountsCollection = await getAccountsCollection()
+    await accountsCollection.deleteMany({})
   })
   describe('POST /surveys',() => {
     test('Should return 403 on add survey without accessToken',async () => {
@@ -32,8 +32,8 @@ describe('Survey Routes',() => {
         .expect(403)
     })
     test('Should return 204 with valid accessToken',async () => {
-      const mockAccount = await insertMockAccountOnDatabase(accountCollection)
-      const usedAccessToken = await addValidAccessToAccount({ account: mockAccount,accountCollection,withAdminRole: true })
+      const mockAccount = await insertMockAccountOnDatabase(accountsCollection)
+      const usedAccessToken = await addValidAccessToAccount({ account: mockAccount,accountsCollection,withAdminRole: true })
       await request(app).post('/api/surveys').set('x-access-token',usedAccessToken)
         .send(
           mockAddSurveyParams()
@@ -41,8 +41,8 @@ describe('Survey Routes',() => {
         .expect(204)
     })
     test('Should return 403 with valid accessToken and no admin role',async () => {
-      const mockAccount = await insertMockAccountOnDatabase(accountCollection)
-      const usedAccessToken = await addValidAccessToAccount({ account: mockAccount,accountCollection })
+      const mockAccount = await insertMockAccountOnDatabase(accountsCollection)
+      const usedAccessToken = await addValidAccessToAccount({ account: mockAccount,accountsCollection })
       await request(app).post('/api/surveys').set('x-access-token',usedAccessToken)
         .send(
           mockAddSurveyParams()
@@ -55,8 +55,8 @@ describe('Survey Routes',() => {
       await request(app).get('/api/surveys').expect(403)
     })
     test('Should return 204 on load survey with accessToken and admin role no surveys saved',async () => {
-      const mockAccount = await insertMockAccountOnDatabase(accountCollection)
-      const usedAccessToken = await addValidAccessToAccount({ account: mockAccount,accountCollection,withAdminRole: true })
+      const mockAccount = await insertMockAccountOnDatabase(accountsCollection)
+      const usedAccessToken = await addValidAccessToAccount({ account: mockAccount,accountsCollection,withAdminRole: true })
       await
       request(app)
         .get('/api/surveys')
@@ -64,8 +64,8 @@ describe('Survey Routes',() => {
         .expect(204)
     })
     test('Should return 204 on load survey with accessToken and no role and no surveys saved',async () => {
-      const mockAccount = await insertMockAccountOnDatabase(accountCollection)
-      const usedAccessToken = await addValidAccessToAccount({ account: mockAccount,accountCollection })
+      const mockAccount = await insertMockAccountOnDatabase(accountsCollection)
+      const usedAccessToken = await addValidAccessToAccount({ account: mockAccount,accountsCollection })
       await
       request(app)
         .get('/api/surveys')
@@ -73,8 +73,8 @@ describe('Survey Routes',() => {
         .expect(204)
     })
     test('Should return 200 on load survey with accessToken and admin role with surveys saved',async () => {
-      const mockAccount = await insertMockAccountOnDatabase(accountCollection)
-      const usedAccessToken = await addValidAccessToAccount({ account: mockAccount,accountCollection, withAdminRole: true })
+      const mockAccount = await insertMockAccountOnDatabase(accountsCollection)
+      const usedAccessToken = await addValidAccessToAccount({ account: mockAccount,accountsCollection, withAdminRole: true })
       await insertMockSurveyOnDatabase(surveysCollection)
       await
       request(app)
@@ -83,8 +83,8 @@ describe('Survey Routes',() => {
         .expect(200)
     })
     test('Should return 200 on load survey with accessToken and no role with surveys saved',async () => {
-      const mockAccount = await insertMockAccountOnDatabase(accountCollection)
-      const usedAccessToken = await addValidAccessToAccount({ account: mockAccount,accountCollection })
+      const mockAccount = await insertMockAccountOnDatabase(accountsCollection)
+      const usedAccessToken = await addValidAccessToAccount({ account: mockAccount,accountsCollection })
       await insertMockSurveyOnDatabase(surveysCollection)
       await
       request(app)

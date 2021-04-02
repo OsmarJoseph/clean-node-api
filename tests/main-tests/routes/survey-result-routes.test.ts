@@ -6,7 +6,7 @@ import { addValidAccessToAccount, insertMockAccountOnDatabase, insertMockSurveyO
 import request from 'supertest'
 import faker from 'faker'
 
-let accountCollection: AccountsCollection
+let accountsCollection: AccountsCollection
 let surveysCollection: SurveysCollection
 
 describe('Survey Result Routes',() => {
@@ -21,8 +21,8 @@ describe('Survey Result Routes',() => {
   beforeEach(async () => {
     surveysCollection = await getSurveysCollection()
     await surveysCollection.deleteMany({})
-    accountCollection = await getAccountsCollection()
-    await accountCollection.deleteMany({})
+    accountsCollection = await getAccountsCollection()
+    await accountsCollection.deleteMany({})
   })
 
   describe('PUT /surveys/:surveyId/results',() => {
@@ -36,8 +36,8 @@ describe('Survey Result Routes',() => {
         .expect(403)
     })
     test('Should return 200 on save survey result success',async () => {
-      const mockAccount = await insertMockAccountOnDatabase(accountCollection)
-      const usedAccessToken = await addValidAccessToAccount({ account: mockAccount,accountCollection })
+      const mockAccount = await insertMockAccountOnDatabase(accountsCollection)
+      const usedAccessToken = await addValidAccessToAccount({ account: mockAccount,accountsCollection })
       const { id: surveyId,possibleAnswers: [{ answer: possibleAnswer }] } = await insertMockSurveyOnDatabase(surveysCollection)
 
       await request(app)
@@ -58,8 +58,8 @@ describe('Survey Result Routes',() => {
         .expect(403)
     })
     test('Should return 200 on load survey result success',async () => {
-      const mockAccount = await insertMockAccountOnDatabase(accountCollection)
-      const usedAccessToken = await addValidAccessToAccount({ account: mockAccount,accountCollection })
+      const mockAccount = await insertMockAccountOnDatabase(accountsCollection)
+      const usedAccessToken = await addValidAccessToAccount({ account: mockAccount,accountsCollection })
       const { id: surveyId } = await insertMockSurveyOnDatabase(surveysCollection)
 
       await request(app)

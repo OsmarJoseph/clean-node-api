@@ -4,7 +4,7 @@ import { getAccountsCollection,AccountsCollection, getSurveysCollection, Surveys
 import { insertMockSurveyOnDatabase,insertMockAccountOnDatabase , insertMockSurveyResultOnDatabase } from '@/tests/infra-tests/mocks'
 
 let surveysCollection: SurveysCollection
-let surveyResultCollection: SurveyResultsCollection
+let surveyResultsCollection: SurveyResultsCollection
 let accountsCollection: AccountsCollection
 
 const makeSut = (): SurveyResultMongoRepository => new SurveyResultMongoRepository()
@@ -22,8 +22,8 @@ describe('SurveyResultMongoRespository',() => {
     surveysCollection = await getSurveysCollection()
     await surveysCollection.deleteMany({})
 
-    surveyResultCollection = await getSurveyResultsCollection()
-    await surveyResultCollection.deleteMany({})
+    surveyResultsCollection = await getSurveyResultsCollection()
+    await surveyResultsCollection.deleteMany({})
 
     accountsCollection = await getAccountsCollection()
     await accountsCollection.deleteMany({})
@@ -43,7 +43,7 @@ describe('SurveyResultMongoRespository',() => {
         date: new Date()
       }
       await sut.save({ ...surveyResultParams })
-      const savedSurveyResult = await surveyResultCollection.findOne({
+      const savedSurveyResult = await surveyResultsCollection.findOne({
         surveyId,
         accountId,
         answer: usedAnswer
@@ -64,12 +64,12 @@ describe('SurveyResultMongoRespository',() => {
         answer: usedAnswer,
         date: new Date()
       }
-      await insertMockSurveyResultOnDatabase({ ...surveyResultParams },surveyResultCollection)
+      await insertMockSurveyResultOnDatabase({ ...surveyResultParams },surveyResultsCollection)
       const updatedAnswer = survey.possibleAnswers[1].answer
       await sut.save(
         { ...surveyResultParams,answer: updatedAnswer }
       )
-      const updatedSurveyResult = await surveyResultCollection.find({
+      const updatedSurveyResult = await surveyResultsCollection.find({
         surveyId,
         accountId,
         answer: updatedAnswer
@@ -92,10 +92,10 @@ describe('SurveyResultMongoRespository',() => {
         answer: firstUsedAnswer,
         date: new Date()
       }
-      await insertMockSurveyResultOnDatabase({ ...surveyResultParams },surveyResultCollection)
-      await insertMockSurveyResultOnDatabase({ ...surveyResultParams },surveyResultCollection)
-      await insertMockSurveyResultOnDatabase({ ...surveyResultParams,answer: secondUsedAnswer },surveyResultCollection)
-      await insertMockSurveyResultOnDatabase({ ...surveyResultParams,answer: secondUsedAnswer },surveyResultCollection)
+      await insertMockSurveyResultOnDatabase({ ...surveyResultParams },surveyResultsCollection)
+      await insertMockSurveyResultOnDatabase({ ...surveyResultParams },surveyResultsCollection)
+      await insertMockSurveyResultOnDatabase({ ...surveyResultParams,answer: secondUsedAnswer },surveyResultsCollection)
+      await insertMockSurveyResultOnDatabase({ ...surveyResultParams,answer: secondUsedAnswer },surveyResultsCollection)
       const loadedSurveyResult = await sut.loadBySurveyId(surveyId)
       expect(loadedSurveyResult).toBeTruthy()
       const [firstAnswer,secondAnswer] = loadedSurveyResult.answers

@@ -81,7 +81,7 @@ describe('Surveys GraphQL', () => {
       const res: any = await query(surveysQuery)
       expect(res.data.surveys.length).toBe(1)
       expect(res.data.surveys[0].id).toEqual(savedSurvey.id.toString())
-      expect(res.data.surveys[0].date).toEqual(savedSurvey.date.toISOString())
+      expect(res.data.surveys[0].date).toBe(savedSurvey.date.toISOString())
       expect(res.data.surveys[0].possibleAnswers).toEqual(savedSurvey.possibleAnswers)
       expect(res.data.surveys[0].question).toBe(savedSurvey.question)
     })

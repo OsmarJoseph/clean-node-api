@@ -1,10 +1,10 @@
 import { app } from '@/main/config/app'
 import { MongoHelper } from '@/infra/db/mongodb/helpers'
 import { getAccountsCollection, AccountsCollection } from '@/infra/db/mongodb/collections'
-import request from 'supertest'
 import { insertMockAccountOnDatabase } from '@/tests/infra-tests/mocks'
 import { mockAccountParams } from '@/tests/domain-tests/mocks'
 
+import request from 'supertest'
 import faker from 'faker'
 import { hash } from 'bcrypt'
 

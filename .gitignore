@@ -6,5 +6,5 @@ coverage
 globalConfig.json
 data
 !src/data
-!tests/data
+!__tests__/_data
 .vscode

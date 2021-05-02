@@ -1,5 +1,5 @@
 export class QueryBuilder {
-  private readonly query = []
+  private readonly query: Object[] = []
   match (data: Object): QueryBuilder {
     this.query.push({
       $match: data

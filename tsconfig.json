@@ -5,13 +5,21 @@
     "target": "es2019",
     "esModuleInterop": true,
     "sourceMap": true,
-    "rootDirs": ["src", "tests"],
+    "rootDirs": ["src", "__tests__"],
     "baseUrl": "src",
+    "resolveJsonModule": true,
+    "strict": false,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "noImplicitThis": true,
+    "noImplicitAny": true,
+    "removeComments": true,
     "paths": {
-      "@/tests/*": ["../tests/*"],
+      "@/tests/*": ["../__tests__/*"],
       "@/*": ["*"]
     }
   },
-  "include": ["src", "tests"],
+  "include": ["src", "__tests__", "./**.ts"],
   "exclude": []
 }

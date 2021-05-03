@@ -2,19 +2,19 @@ export const surveySchema = {
   type: 'object',
   properties: {
     id: {
-      type: 'string'
+      type: 'string',
     },
     question: {
-      type: 'string'
+      type: 'string',
     },
     possibleAnswers: {
       type: 'array',
       items: {
-        $ref: '#/schemas/surveyAnswerSchema'
-      }
+        $ref: '#/schemas/surveyAnswerSchema',
+      },
     },
     date: {
-      type: 'string'
-    }
-  }
+      type: 'string',
+    },
+  },
 }

@@ -9,25 +9,25 @@ type SutTypes = {
   validationSpies: ValidationSpy[]
 }
 const makeSut = (): SutTypes => {
-  const validationSpies = [new ValidationSpy(),new ValidationSpy()]
+  const validationSpies = [new ValidationSpy(), new ValidationSpy()]
   const sut = new ValidationComposite(validationSpies)
   return {
     sut,
-    validationSpies
+    validationSpies,
   }
 }
 
 describe('Validation Composite', () => {
   test('Should return an error if any validation fails', () => {
-    const { sut,validationSpies } = makeSut()
+    const { sut, validationSpies } = makeSut()
     validationSpies[1].result = new MissingParamError('test_field')
     const validationError = sut.validate({ test_field: faker.random.word() })
     expect(validationError).toEqual(new MissingParamError('test_field'))
   })
   test('Should return the first error if more than one validation fails', () => {
-    const { sut,validationSpies } = makeSut()
-    validationSpies[0].result = (new Error())
-    validationSpies[1].result = (new MissingParamError('test_field'))
+    const { sut, validationSpies } = makeSut()
+    validationSpies[0].result = new Error()
+    validationSpies[1].result = new MissingParamError('test_field')
     const validationError = sut.validate({ test_field: faker.random.word() })
     expect(validationError).toEqual(new Error())
   })

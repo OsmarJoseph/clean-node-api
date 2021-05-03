@@ -4,20 +4,20 @@ export const MongoHelper = {
   client: null as MongoClient,
   uri: null as string,
 
-  async connect (uri: string): Promise<void> {
+  async connect(uri: string): Promise<void> {
     this.uri = uri
     this.client = await MongoClient.connect(uri, {
       useNewUrlParser: true,
-      useUnifiedTopology: true
+      useUnifiedTopology: true,
     })
   },
 
-  async disconnect () {
+  async disconnect() {
     await this.client.close()
     this.client = null
   },
 
-  async getCollection (name: string): Promise<Collection> {
+  async getCollection(name: string): Promise<Collection> {
     if (!this.client?.isConnected()) await this.connect(this.uri)
 
     return this.client.db().collection(name)
@@ -26,11 +26,11 @@ export const MongoHelper = {
   map: (mongoObject: any): any => {
     if (mongoObject) {
       const { _id, ...accountWithoutId } = mongoObject
-      return { ...accountWithoutId,id: _id }
+      return { ...accountWithoutId, id: _id }
     }
   },
 
   mapArray: (mongoObject: any[]): any => {
-    return mongoObject.map(mongoObject => MongoHelper.map(mongoObject))
-  }
+    return mongoObject.map((mongoObject) => MongoHelper.map(mongoObject))
+  },
 }

@@ -1,9 +1,6 @@
 import { DbLoadSurveyResult } from '@/data/usecases'
 import { throwError } from '@/tests/_helpers'
-import {
-  LoadSurveyResultRepositorySpy,
-  LoadSurveyByIdRepositorySpy
-} from '@/tests/_data/mocks'
+import { LoadSurveyResultRepositorySpy, LoadSurveyByIdRepositorySpy } from '@/tests/_data/mocks'
 import MockDate from 'mockdate'
 
 type SutTypes = {
@@ -14,14 +11,11 @@ type SutTypes = {
 const makeSut = (): SutTypes => {
   const loadSurveyResultRepositorySpy = new LoadSurveyResultRepositorySpy()
   const loadSurveyByIdRepositorySpy = new LoadSurveyByIdRepositorySpy()
-  const sut = new DbLoadSurveyResult(
-    loadSurveyResultRepositorySpy,
-    loadSurveyByIdRepositorySpy
-  )
+  const sut = new DbLoadSurveyResult(loadSurveyResultRepositorySpy, loadSurveyByIdRepositorySpy)
   return {
     sut,
     loadSurveyResultRepositorySpy,
-    loadSurveyByIdRepositorySpy
+    loadSurveyByIdRepositorySpy,
   }
 }
 
@@ -47,38 +41,34 @@ describe('DbLoadSurveyResult Usecase', () => {
   })
   describe('LoadSurveyByIdRepository', () => {
     test('Should call LoadSurveyByIdRepository if LoadSurveyResultRepository return null', async () => {
-      const { sut,loadSurveyResultRepositorySpy,loadSurveyByIdRepositorySpy } = makeSut()
+      const { sut, loadSurveyResultRepositorySpy, loadSurveyByIdRepositorySpy } = makeSut()
       loadSurveyResultRepositorySpy.result = null
 
       await sut.load('surveyId')
       expect(loadSurveyByIdRepositorySpy.id).toBe('surveyId')
     })
     test('Should throw if LoadSurveyByIdRepository throws', async () => {
-      const {
-        sut,
-        loadSurveyResultRepositorySpy,
-        loadSurveyByIdRepositorySpy
-      } = makeSut()
+      const { sut, loadSurveyResultRepositorySpy, loadSurveyByIdRepositorySpy } = makeSut()
       loadSurveyResultRepositorySpy.result = null
       loadSurveyByIdRepositorySpy.loadById = throwError
       const loadPromise = sut.load('surveyId')
       await expect(loadPromise).rejects.toThrow()
     })
     test('Should return a surveyResultModel with all answers with count 0 if LoadSurveyResultRepository return null', async () => {
-      const { sut, loadSurveyResultRepositorySpy,loadSurveyByIdRepositorySpy } = makeSut()
+      const { sut, loadSurveyResultRepositorySpy, loadSurveyByIdRepositorySpy } = makeSut()
       loadSurveyResultRepositorySpy.result = null
 
-      const { date,question,id: surveyId,possibleAnswers } = loadSurveyByIdRepositorySpy.result
+      const { date, question, id: surveyId, possibleAnswers } = loadSurveyByIdRepositorySpy.result
       const answers = possibleAnswers.map((answerObject) => ({
         ...answerObject,
         count: 0,
-        percent: 0
+        percent: 0,
       }))
       const expectedSurveyResult = {
         date,
         question,
         surveyId,
-        answers
+        answers,
       }
 
       const loadedSurveyResult = await sut.load('surveyId')
@@ -87,7 +77,7 @@ describe('DbLoadSurveyResult Usecase', () => {
   })
   describe('success', () => {
     test('Should return a surveyResult on success', async () => {
-      const { sut,loadSurveyResultRepositorySpy } = makeSut()
+      const { sut, loadSurveyResultRepositorySpy } = makeSut()
       const loadedSurveyResult = await sut.load('surveyId')
       expect(loadedSurveyResult).toEqual(loadSurveyResultRepositorySpy.result)
     })

@@ -1,9 +1,5 @@
 import { LoadSurveysController } from '@/presentation/controllers'
-import {
-  okRequest,
-  serverErrorRequest,
-  noContentRequest
-} from '@/presentation/helpers'
+import { okRequest, serverErrorRequest, noContentRequest } from '@/presentation/helpers'
 import { throwError } from '@/tests/_helpers'
 import { LoadSurveysSpy } from '@/tests/_presentation/mocks'
 import MockDate from 'mockdate'
@@ -17,7 +13,7 @@ const makeSut = (): SutTypes => {
   const sut = new LoadSurveysController(loadSurveysSpy)
   return {
     sut,
-    loadSurveysSpy
+    loadSurveysSpy,
   }
 }
 describe('Load Suveys Controller', () => {

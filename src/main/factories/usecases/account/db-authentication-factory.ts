@@ -1,7 +1,7 @@
 import { Authentication } from '@/domain/usecases'
 import { DbAuthentication } from '@/data/usecases'
 import { AccountMongoRepository } from '@/infra/db/mongodb/repositories'
-import { BcryptAdapter , JwtAdapter } from '@/infra/criptography'
+import { BcryptAdapter, JwtAdapter } from '@/infra/criptography'
 import { env } from '@/main/config/env'
 
 export const makeDbAuthentication = (): Authentication => {
@@ -13,6 +13,6 @@ export const makeDbAuthentication = (): Authentication => {
     accountMongoRepository,
     bcryptAdapter,
     jwtAdapter,
-    accountMongoRepository
+    accountMongoRepository,
   )
 }

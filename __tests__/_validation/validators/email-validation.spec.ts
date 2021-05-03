@@ -11,29 +11,29 @@ type SutTypes = {
 }
 const makeSut = (): SutTypes => {
   const emailValidatorSpy = new EMailValidatorSpy()
-  const sut = new EmailValidation('email',emailValidatorSpy)
+  const sut = new EmailValidation('email', emailValidatorSpy)
   return {
     sut,
-    emailValidatorSpy
+    emailValidatorSpy,
   }
 }
-describe('Email Validation',() => {
+describe('Email Validation', () => {
   test('Should return an error if EmailValidator returns false', () => {
-    const { sut,emailValidatorSpy } = makeSut()
+    const { sut, emailValidatorSpy } = makeSut()
     emailValidatorSpy.isValid = () => false
     const validationError = sut.validate({ email: faker.internet.email() })
     expect(validationError).toEqual(new InvalidParamError('email'))
   })
 
   test('Should call EmailValidator with correct email', () => {
-    const { sut,emailValidatorSpy } = makeSut()
+    const { sut, emailValidatorSpy } = makeSut()
     const mockEmail = faker.internet.email()
     sut.validate({ email: mockEmail })
     expect(emailValidatorSpy.email).toBe(mockEmail)
   })
 
   test('Should throw if EmailValidator throws', () => {
-    const { sut,emailValidatorSpy } = makeSut()
+    const { sut, emailValidatorSpy } = makeSut()
     emailValidatorSpy.isValid = throwError
     expect(sut.validate).toThrow()
   })

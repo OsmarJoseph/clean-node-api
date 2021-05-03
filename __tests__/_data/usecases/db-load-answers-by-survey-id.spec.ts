@@ -13,7 +13,7 @@ const makeSut = (): SutTypes => {
   const sut = new DbLoadAnswersBySurveyId(loadAnswersBySurveyIdRepositorySpy)
   return {
     sut,
-    loadAnswersBySurveyIdRepositorySpy
+    loadAnswersBySurveyIdRepositorySpy,
   }
 }
 describe('DbLoadAnswersBySurveyId', () => {
@@ -41,7 +41,7 @@ describe('DbLoadAnswersBySurveyId', () => {
     expect(answers).toEqual([])
   })
   test('Should return answers on success', async () => {
-    const { sut,loadAnswersBySurveyIdRepositorySpy } = makeSut()
+    const { sut, loadAnswersBySurveyIdRepositorySpy } = makeSut()
     const answers = await sut.loadAnswers(mockId)
     expect(answers).toEqual(loadAnswersBySurveyIdRepositorySpy.result)
   })

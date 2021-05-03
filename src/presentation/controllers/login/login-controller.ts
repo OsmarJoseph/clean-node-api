@@ -4,7 +4,7 @@ import {
   badRequest,
   serverErrorRequest,
   unauthorizedRequest,
-  okRequest
+  okRequest,
 } from '@/presentation/helpers'
 
 export namespace LoginController {
@@ -15,12 +15,12 @@ export namespace LoginController {
 }
 
 export class LoginController implements Controller {
-  constructor (
+  constructor(
     private readonly authentication: Authentication,
-    private readonly validation: Validation
+    private readonly validation: Validation,
   ) {}
 
-  async handle (request: LoginController.Request): Promise<HttpResponse> {
+  async handle(request: LoginController.Request): Promise<HttpResponse> {
     try {
       const error = this.validation.validate(request)
       if (error) {

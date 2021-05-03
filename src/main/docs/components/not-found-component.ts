@@ -1,3 +1,3 @@
 export const notFoundComponent = {
-  description: 'API não encontrada'
+  description: 'API não encontrada',
 }

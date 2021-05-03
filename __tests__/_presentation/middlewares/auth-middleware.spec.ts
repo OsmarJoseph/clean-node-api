@@ -1,9 +1,5 @@
 import { AuthMiddleware } from '@/presentation/middlewares'
-import {
-  forbidenRequest,
-  okRequest,
-  serverErrorRequest
-} from '@/presentation/helpers'
+import { forbidenRequest, okRequest, serverErrorRequest } from '@/presentation/helpers'
 import { AccessDeniedError } from '@/presentation/errors'
 import { LoadAccountIdByTokenSpy } from '@/tests/_presentation/mocks'
 import { throwError } from '@/tests/_helpers'
@@ -11,7 +7,7 @@ import { throwError } from '@/tests/_helpers'
 import faker from 'faker'
 
 const mockRequest = (): AuthMiddleware.Request => ({
-  accessToken: faker.random.uuid()
+  accessToken: faker.random.uuid(),
 })
 
 type SutTypes = {
@@ -24,7 +20,7 @@ const makeSut = (role?: string): SutTypes => {
 
   return {
     sut,
-    loadAccountIdByTokenSpy
+    loadAccountIdByTokenSpy,
   }
 }
 describe('Auth Middleware', () => {
@@ -51,9 +47,7 @@ describe('Auth Middleware', () => {
   test('Should return 200 if LoadAccountIdByToken return an account', async () => {
     const { sut, loadAccountIdByTokenSpy } = makeSut()
     const httpResponse = await sut.handle(mockRequest())
-    expect(httpResponse).toEqual(
-      okRequest({ accountId: loadAccountIdByTokenSpy.result })
-    )
+    expect(httpResponse).toEqual(okRequest({ accountId: loadAccountIdByTokenSpy.result }))
   })
   test('Should return 500 if LoadAccountIdByToken throws', async () => {
     const { sut, loadAccountIdByTokenSpy } = makeSut()

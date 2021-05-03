@@ -5,25 +5,25 @@ import faker from 'faker'
 export const mockAddAccountParams = (): AddAccount.Params => ({
   name: faker.name.findName(),
   email: faker.internet.email(),
-  password: faker.internet.password()
+  password: faker.internet.password(),
 })
 
-export const mockAccountParams = (): AddAccount.Params & {passwordConfirmation: string} => {
+export const mockAccountParams = (): AddAccount.Params & { passwordConfirmation: string } => {
   const mockedPassword = faker.internet.password()
   return {
     email: faker.internet.email(),
     name: faker.name.findName(),
     password: mockedPassword,
-    passwordConfirmation: mockedPassword
+    passwordConfirmation: mockedPassword,
   }
 }
 
 export const mockAccountModel = (): AccountModel => ({
   id: faker.random.uuid(),
-  ...mockAddAccountParams()
+  ...mockAddAccountParams(),
 })
 
 export const mockAuthenticationParams = (): Authentication.Params => ({
   email: faker.internet.email(),
-  password: faker.internet.password()
+  password: faker.internet.password(),
 })

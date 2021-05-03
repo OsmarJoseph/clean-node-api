@@ -5,5 +5,5 @@ export interface AddSurvey {
 }
 
 export namespace AddSurvey {
-  export type Params = Omit<SurveyModel,'id'>
+  export type Params = Omit<SurveyModel, 'id'>
 }

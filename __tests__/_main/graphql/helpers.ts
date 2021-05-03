@@ -9,6 +9,6 @@ export const makeFakeApolloServer = (): ApolloServer => {
     typeDefs,
     resolvers,
     schemaDirectives,
-    context
+    context,
   })
 }

@@ -12,7 +12,7 @@ const makeSut = (): SutTypes => {
   const sut = new DbLoadSurveys(loadSurveysRepositorySpy)
   return {
     sut,
-    loadSurveysRepositorySpy
+    loadSurveysRepositorySpy,
   }
 }
 describe('DbLoadSurveys', () => {
@@ -34,7 +34,7 @@ describe('DbLoadSurveys', () => {
     await expect(surveysListPromise).rejects.toThrow()
   })
   test('Should return a list of surveys on success', async () => {
-    const { sut,loadSurveysRepositorySpy } = makeSut()
+    const { sut, loadSurveysRepositorySpy } = makeSut()
     const surveysList = await sut.load()
     expect(surveysList).toEqual(loadSurveysRepositorySpy.result)
   })

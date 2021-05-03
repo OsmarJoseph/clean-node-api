@@ -6,10 +6,10 @@ export const signUpPath = {
       content: {
         'application/json': {
           schema: {
-            $ref: '#/schemas/signUpParamsSchema'
-          }
-        }
-      }
+            $ref: '#/schemas/signUpParamsSchema',
+          },
+        },
+      },
     },
     responses: {
       200: {
@@ -17,23 +17,23 @@ export const signUpPath = {
         content: {
           'application/json': {
             schema: {
-              $ref: '#/schemas/accessSchema'
-            }
-          }
-        }
+              $ref: '#/schemas/accessSchema',
+            },
+          },
+        },
       },
       400: {
-        $ref: '#/components/badRequestComponent'
+        $ref: '#/components/badRequestComponent',
       },
       403: {
-        $ref: '#/components/forbidenRequestComponent'
+        $ref: '#/components/forbidenRequestComponent',
       },
       404: {
-        $ref: '#/components/notFoundComponent'
+        $ref: '#/components/notFoundComponent',
       },
       500: {
-        $ref: '#/components/serverErrorComponent'
-      }
-    }
-  }
+        $ref: '#/components/serverErrorComponent',
+      },
+    },
+  },
 }

@@ -10,15 +10,15 @@ const config: Config.InitialOptions = {
   coverageProvider: 'babel',
   testEnvironment: 'node',
   transform: {
-    '.+\\.ts$': 'ts-jest'
+    '.+\\.ts$': 'ts-jest',
   },
   preset: '@shelf/jest-mongodb',
   moduleNameMapper: {
     ...pathsToModuleNameMapper(compilerOptions.paths, {
-      prefix: '<rootDir>/src'
+      prefix: '<rootDir>/src',
     }),
-    '\\.scss$': 'identity-obj-proxy'
-  }
+    '\\.scss$': 'identity-obj-proxy',
+  },
 }
 
 export default config

@@ -2,16 +2,16 @@ export const surveyResultAnswerSchema = {
   type: 'object',
   properties: {
     image: {
-      type: 'string'
+      type: 'string',
     },
     answer: {
-      type: 'string'
+      type: 'string',
     },
     count: {
-      type: 'number'
+      type: 'number',
     },
     percent: {
-      type: 'number'
-    }
-  }
+      type: 'number',
+    },
+  },
 }

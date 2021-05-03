@@ -1,9 +1,6 @@
 import { DbSaveSurveyResult } from '@/data/usecases'
 import { mockSaveSurveyResultParams } from '@/tests/_domain/mocks'
-import {
-  SaveSurveyResultRepositorySpy,
-  LoadSurveyResultRepositorySpy
-} from '@/tests/_data/mocks'
+import { SaveSurveyResultRepositorySpy, LoadSurveyResultRepositorySpy } from '@/tests/_data/mocks'
 import { throwError } from '@/tests/_helpers'
 import MockDate from 'mockdate'
 
@@ -16,14 +13,11 @@ type SutTypes = {
 const makeSut = (): SutTypes => {
   const saveSurveyResultRepositorySpy = new SaveSurveyResultRepositorySpy()
   const loadSurveyResultRepositorySpy = new LoadSurveyResultRepositorySpy()
-  const sut = new DbSaveSurveyResult(
-    saveSurveyResultRepositorySpy,
-    loadSurveyResultRepositorySpy
-  )
+  const sut = new DbSaveSurveyResult(saveSurveyResultRepositorySpy, loadSurveyResultRepositorySpy)
   return {
     sut,
     saveSurveyResultRepositorySpy,
-    loadSurveyResultRepositorySpy
+    loadSurveyResultRepositorySpy,
   }
 }
 describe('DbSaveSurveyResult Usecase', () => {
@@ -64,10 +58,8 @@ describe('DbSaveSurveyResult Usecase', () => {
 
     describe('success', () => {
       test('Should return a surveyResult on success', async () => {
-        const { sut,loadSurveyResultRepositorySpy } = makeSut()
-        const surveyResultResponse = await sut.save(
-          mockSaveSurveyResultParams()
-        )
+        const { sut, loadSurveyResultRepositorySpy } = makeSut()
+        const surveyResultResponse = await sut.save(mockSaveSurveyResultParams())
         expect(surveyResultResponse).toEqual(loadSurveyResultRepositorySpy.result)
       })
     })

@@ -1,7 +1,7 @@
 import { AuthDirective } from './auth-directive'
 
 const schemaDirectives = {
-  auth: AuthDirective
+  auth: AuthDirective,
 }
 
 export { schemaDirectives }

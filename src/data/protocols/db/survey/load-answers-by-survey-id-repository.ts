@@ -1,9 +1,9 @@
 import { LoadAnswersBySurveyId } from '@/domain/usecases'
 
-export interface LoadAnswersBySurveyIdRepository{
+export interface LoadAnswersBySurveyIdRepository {
   loadAnswers: (id: string) => Promise<LoadAnswersBySurveyIdRepository.Result>
 }
 
-export namespace LoadAnswersBySurveyIdRepository{
+export namespace LoadAnswersBySurveyIdRepository {
   export type Result = LoadAnswersBySurveyId.Result
 }

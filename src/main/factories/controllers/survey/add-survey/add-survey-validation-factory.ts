@@ -3,7 +3,7 @@ import { RequiredFiledValidation, ValidationComposite } from '@/validation/valid
 
 export const makeAddSurveyValidation = (): Validation => {
   const validations: Validation[] = []
-  const requiredFields = ['question','possibleAnswers']
+  const requiredFields = ['question', 'possibleAnswers']
   for (const requiredField of requiredFields) {
     validations.push(new RequiredFiledValidation(requiredField))
   }

@@ -2,7 +2,7 @@ import {
   badRequest,
   serverErrorRequest,
   unauthorizedRequest,
-  okRequest
+  okRequest,
 } from '@/presentation/helpers'
 import { LoginController } from '@/presentation/controllers'
 import { throwError } from '@/tests/_helpers'
@@ -25,13 +25,13 @@ const makeSut = (): SutTypes => {
   return {
     sut,
     authenticationSpy,
-    validationSpy
+    validationSpy,
   }
 }
 
 const mockRequest = (): LoginController.Request => ({
   email: faker.internet.email(),
-  password: faker.internet.password()
+  password: faker.internet.password(),
 })
 
 describe('Login Controller', () => {
@@ -59,9 +59,7 @@ describe('Login Controller', () => {
   test('Should return 200 if valid credentials are provided', async () => {
     const { sut, authenticationSpy } = makeSut()
     const httpResponse = await sut.handle(mockRequest())
-    expect(httpResponse).toEqual(
-      okRequest({ accessToken: authenticationSpy.accessToken })
-    )
+    expect(httpResponse).toEqual(okRequest({ accessToken: authenticationSpy.accessToken }))
   })
   test('Should call validation with correct value', async () => {
     const { sut, validationSpy } = makeSut()

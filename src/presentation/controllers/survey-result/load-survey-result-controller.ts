@@ -1,10 +1,6 @@
 import { CheckSurveyById, LoadSurveyResult } from '@/domain/usecases'
 import { Controller, HttpResponse } from '@/presentation/protocols'
-import {
-  forbidenRequest,
-  serverErrorRequest,
-  okRequest
-} from '@/presentation/helpers'
+import { forbidenRequest, serverErrorRequest, okRequest } from '@/presentation/helpers'
 import { InvalidParamError } from '@/presentation/errors'
 
 export namespace LoadSurveyResultController {
@@ -14,14 +10,12 @@ export namespace LoadSurveyResultController {
 }
 
 export class LoadSurveyResultController implements Controller {
-  constructor (
+  constructor(
     private readonly checkSurveyById: CheckSurveyById,
-    private readonly loadSurveyResult: LoadSurveyResult
+    private readonly loadSurveyResult: LoadSurveyResult,
   ) {}
 
-  async handle (
-    request: LoadSurveyResultController.Request
-  ): Promise<HttpResponse> {
+  async handle(request: LoadSurveyResultController.Request): Promise<HttpResponse> {
     try {
       const { surveyId } = request
       const existsSurvey = await this.checkSurveyById.checkById(surveyId)

@@ -6,10 +6,10 @@ export const loginPath = {
       content: {
         'application/json': {
           schema: {
-            $ref: '#/schemas/loginParamsSchema'
-          }
-        }
-      }
+            $ref: '#/schemas/loginParamsSchema',
+          },
+        },
+      },
     },
     responses: {
       200: {
@@ -17,23 +17,23 @@ export const loginPath = {
         content: {
           'application/json': {
             schema: {
-              $ref: '#/schemas/accessSchema'
-            }
-          }
-        }
+              $ref: '#/schemas/accessSchema',
+            },
+          },
+        },
       },
       400: {
-        $ref: '#/components/badRequestComponent'
+        $ref: '#/components/badRequestComponent',
       },
       401: {
-        $ref: '#/components/unauthorizedRequestComponent'
+        $ref: '#/components/unauthorizedRequestComponent',
       },
       404: {
-        $ref: '#/components/notFoundComponent'
+        $ref: '#/components/notFoundComponent',
       },
       500: {
-        $ref: '#/components/serverErrorComponent'
-      }
-    }
-  }
+        $ref: '#/components/serverErrorComponent',
+      },
+    },
+  },
 }

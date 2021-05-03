@@ -1,10 +1,6 @@
 import { LoadAnswersBySurveyId, SaveSurveyResult } from '@/domain/usecases'
 import { Controller, HttpResponse } from '@/presentation/protocols'
-import {
-  forbidenRequest,
-  serverErrorRequest,
-  okRequest
-} from '@/presentation/helpers'
+import { forbidenRequest, serverErrorRequest, okRequest } from '@/presentation/helpers'
 import { InvalidParamError } from '@/presentation/errors'
 
 export namespace SaveSurveyResultController {
@@ -16,14 +12,12 @@ export namespace SaveSurveyResultController {
 }
 
 export class SaveSurveyResultController implements Controller {
-  constructor (
+  constructor(
     private readonly loadAnswersBySurveyId: LoadAnswersBySurveyId,
-    private readonly saveSurveyResult: SaveSurveyResult
+    private readonly saveSurveyResult: SaveSurveyResult,
   ) {}
 
-  async handle (
-    request: SaveSurveyResultController.Request
-  ): Promise<HttpResponse> {
+  async handle(request: SaveSurveyResultController.Request): Promise<HttpResponse> {
     try {
       const { answer, surveyId, accountId } = request
 
@@ -42,7 +36,7 @@ export class SaveSurveyResultController implements Controller {
         surveyId,
         accountId,
         answer,
-        date: new Date()
+        date: new Date(),
       })
       return okRequest(addedOrUpdatedSaveResult)
     } catch (error) {

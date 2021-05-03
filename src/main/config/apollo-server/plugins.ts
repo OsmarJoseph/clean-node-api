@@ -2,30 +2,32 @@ import { GraphQLResponse } from 'apollo-server-types'
 import { PluginDefinition } from 'apollo-server-core'
 import { GraphQLError } from 'graphql'
 
-export const plugins: PluginDefinition[] = [{
-  requestDidStart: () => ({
-    willSendResponse: ({ response,errors }) => handleErrors(response, errors)
-  })
-}]
+export const plugins: PluginDefinition[] = [
+  {
+    requestDidStart: () => ({
+      willSendResponse: ({ response, errors }) => handleErrors(response, errors),
+    }),
+  },
+]
 
 const errorsMap = new Map([
-  ['UserInputError',{ statusCode: 400 }],
-  ['AuthenticationError',{ statusCode: 401 }],
-  ['ForbiddenError',{ statusCode: 403 }]
+  ['UserInputError', { statusCode: 400 }],
+  ['AuthenticationError', { statusCode: 401 }],
+  ['ForbiddenError', { statusCode: 403 }],
 ])
 
 const handleErrors = (response: GraphQLResponse, errors: readonly GraphQLError[]): void => {
-  errors?.forEach(error => {
+  errors?.forEach((error) => {
     response.data = undefined
 
     for (const [errorName, { statusCode }] of errorsMap) {
-      if (checkError(error,errorName)) {
+      if (checkError(error, errorName)) {
         response.http.status = statusCode
       }
     }
   })
 }
 
-const checkError = (error: GraphQLError,errorName: string): boolean => {
-  return [error.name,error.originalError?.name].includes(errorName)
+const checkError = (error: GraphQLError, errorName: string): boolean => {
+  return [error.name, error.originalError?.name].includes(errorName)
 }

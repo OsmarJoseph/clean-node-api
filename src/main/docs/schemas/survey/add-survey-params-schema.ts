@@ -2,13 +2,13 @@ export const addSurveyParamsSchema = {
   type: 'object',
   properties: {
     question: {
-      type: 'string'
+      type: 'string',
     },
     possibleAnswers: {
       type: 'array',
       items: {
-        $ref: '#/schemas/surveyAnswerSchema'
-      }
-    }
-  }
+        $ref: '#/schemas/surveyAnswerSchema',
+      },
+    },
+  },
 }

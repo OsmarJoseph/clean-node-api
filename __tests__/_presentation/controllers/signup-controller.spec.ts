@@ -1,9 +1,4 @@
-import {
-  okRequest,
-  badRequest,
-  serverErrorRequest,
-  forbidenRequest
-} from '@/presentation/helpers'
+import { okRequest, badRequest, serverErrorRequest, forbidenRequest } from '@/presentation/helpers'
 import { throwError } from '@/tests/_helpers'
 import { ParamInUseError } from '@/presentation/errors/'
 import { SignUpController } from '@/presentation/controllers'
@@ -18,7 +13,7 @@ const mockRequest = (): SignUpController.Request => {
     email: faker.internet.email(),
     name: faker.name.findName(),
     password: mockedPassword,
-    passwordConfirmation: mockedPassword
+    passwordConfirmation: mockedPassword,
   }
 }
 
@@ -34,16 +29,12 @@ const makeSut = (): SutTypes => {
   const validationSpy = new ValidationSpy()
   const authenticationSpy = new AuthenticationSpy()
 
-  const sut = new SignUpController(
-    addAccountSpy,
-    validationSpy,
-    authenticationSpy
-  )
+  const sut = new SignUpController(addAccountSpy, validationSpy, authenticationSpy)
   return {
     sut,
     addAccountSpy,
     validationSpy,
-    authenticationSpy
+    authenticationSpy,
   }
 }
 
@@ -70,9 +61,7 @@ describe('SignUp Controller', () => {
   test('Should return an accessToken on success', async () => {
     const { sut, authenticationSpy } = makeSut()
     const httpResponse = await sut.handle(mockedRequest)
-    expect(httpResponse).toEqual(
-      okRequest({ accessToken: authenticationSpy.accessToken })
-    )
+    expect(httpResponse).toEqual(okRequest({ accessToken: authenticationSpy.accessToken }))
   })
   test('Should return 403 if AddAccount return false', async () => {
     const { sut, addAccountSpy } = makeSut()

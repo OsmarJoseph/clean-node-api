@@ -13,7 +13,7 @@ export const setupApolloServer = (app: Express): void => {
     typeDefs,
     context,
     schemaDirectives,
-    plugins
+    plugins,
   })
   server.applyMiddleware({ app })
 }

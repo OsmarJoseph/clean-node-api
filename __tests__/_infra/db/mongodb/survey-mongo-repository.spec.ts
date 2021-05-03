@@ -85,7 +85,7 @@ describe('SurveyMongoRepository', () => {
       expect(answers).toEqual([])
     })
     test('Should return answers array on loadAnswers success', async () => {
-      const { id,possibleAnswers } = await insertMockSurveyOnDatabase(surveysCollection)
+      const { id, possibleAnswers } = await insertMockSurveyOnDatabase(surveysCollection)
       const sut = makeSut()
       const answers = await sut.loadAnswers(id)
       expect(answers).toEqual(possibleAnswers.map(({ answer }) => answer))

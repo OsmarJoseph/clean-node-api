@@ -14,7 +14,7 @@ const makeSut = (): SutTypes => {
   const sut = new DbAddSurvey(addSurveyRepositorySpy)
   return {
     sut,
-    addSurveyRepositorySpy
+    addSurveyRepositorySpy,
   }
 }
 describe('DbAddSurvey Usecase', () => {

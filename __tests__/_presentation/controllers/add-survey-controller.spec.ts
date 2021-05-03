@@ -1,9 +1,5 @@
 import { AddSurveyController } from '@/presentation/controllers'
-import {
-  badRequest,
-  serverErrorRequest,
-  noContentRequest
-} from '@/presentation/helpers'
+import { badRequest, serverErrorRequest, noContentRequest } from '@/presentation/helpers'
 import { throwError } from '@/tests/_helpers'
 import { ValidationSpy } from '@/tests/_validation/mocks'
 import { AddSurveySpy } from '@/tests/_presentation/mocks'
@@ -23,7 +19,7 @@ const makeSut = (): SutTypes => {
   return {
     sut,
     validationSpy,
-    addSurveySpy
+    addSurveySpy,
   }
 }
 
@@ -32,9 +28,9 @@ const mockRequest = (): AddSurveyController.Request => ({
   possibleAnswers: [
     {
       image: faker.image.imageUrl(),
-      answer: faker.random.word()
-    }
-  ]
+      answer: faker.random.word(),
+    },
+  ],
 })
 
 describe('Add Survey Controller', () => {

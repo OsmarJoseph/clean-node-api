@@ -1,10 +1,17 @@
 import { SurveyResultMongoRepository } from '@/infra/db/mongodb/repositories'
 import { MongoHelper } from '@/infra/db/mongodb/helpers'
-import { getAccountsCollection,AccountsCollection, getSurveysCollection, SurveysCollection, getSurveyResultsCollection, SurveyResultsCollection } from '@/infra/db/mongodb/collections'
+import {
+  getAccountsCollection,
+  AccountsCollection,
+  getSurveysCollection,
+  SurveysCollection,
+  getSurveyResultsCollection,
+  SurveyResultsCollection,
+} from '@/infra/db/mongodb/collections'
 import {
   insertMockSurveyOnDatabase,
   insertMockAccountOnDatabase,
-  insertMockSurveyResultOnDatabase
+  insertMockSurveyResultOnDatabase,
 } from '@/tests/_infra/mocks'
 
 let surveysCollection: SurveysCollection
@@ -13,7 +20,7 @@ let accountsCollection: AccountsCollection
 
 const makeSut = (): SurveyResultMongoRepository => new SurveyResultMongoRepository()
 
-describe('SurveyResultMongoRespository',() => {
+describe('SurveyResultMongoRespository', () => {
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL)
   })
@@ -32,7 +39,7 @@ describe('SurveyResultMongoRespository',() => {
     accountsCollection = await getAccountsCollection()
     await accountsCollection.deleteMany({})
   })
-  describe('save',() => {
+  describe('save', () => {
     test('Should save a survey result if its new', async () => {
       const survey = await insertMockSurveyOnDatabase(surveysCollection)
       const { id: surveyId } = survey
@@ -44,14 +51,13 @@ describe('SurveyResultMongoRespository',() => {
         surveyId,
         accountId,
         answer: usedAnswer,
-        date: new Date()
+        date: new Date(),
       }
       await sut.save({ ...surveyResultParams })
       const savedSurveyResult = await surveyResultsCollection.findOne({
         surveyId,
         accountId,
-        answer: usedAnswer
-
+        answer: usedAnswer,
       })
       expect(savedSurveyResult).toBeTruthy()
     })
@@ -66,24 +72,24 @@ describe('SurveyResultMongoRespository',() => {
         surveyId,
         accountId,
         answer: usedAnswer,
-        date: new Date()
+        date: new Date(),
       }
-      await insertMockSurveyResultOnDatabase({ ...surveyResultParams },surveyResultsCollection)
+      await insertMockSurveyResultOnDatabase({ ...surveyResultParams }, surveyResultsCollection)
       const updatedAnswer = survey.possibleAnswers[1].answer
-      await sut.save(
-        { ...surveyResultParams,answer: updatedAnswer }
-      )
-      const updatedSurveyResult = await surveyResultsCollection.find({
-        surveyId,
-        accountId,
-        answer: updatedAnswer
-      }).toArray()
+      await sut.save({ ...surveyResultParams, answer: updatedAnswer })
+      const updatedSurveyResult = await surveyResultsCollection
+        .find({
+          surveyId,
+          accountId,
+          answer: updatedAnswer,
+        })
+        .toArray()
       expect(updatedSurveyResult).toBeTruthy()
       expect(updatedSurveyResult.length).toBe(1)
     })
   })
   describe('loadBySurveyId', () => {
-    test('should return a surveyResult on LoadBySurveyId',async () => {
+    test('should return a surveyResult on LoadBySurveyId', async () => {
       const survey = await insertMockSurveyOnDatabase(surveysCollection)
       const { id: surveyId } = survey
       const account = await insertMockAccountOnDatabase(accountsCollection)
@@ -94,15 +100,21 @@ describe('SurveyResultMongoRespository',() => {
         surveyId,
         accountId: account.id,
         answer: firstUsedAnswer,
-        date: new Date()
+        date: new Date(),
       }
-      await insertMockSurveyResultOnDatabase({ ...surveyResultParams },surveyResultsCollection)
-      await insertMockSurveyResultOnDatabase({ ...surveyResultParams },surveyResultsCollection)
-      await insertMockSurveyResultOnDatabase({ ...surveyResultParams,answer: secondUsedAnswer },surveyResultsCollection)
-      await insertMockSurveyResultOnDatabase({ ...surveyResultParams,answer: secondUsedAnswer },surveyResultsCollection)
+      await insertMockSurveyResultOnDatabase({ ...surveyResultParams }, surveyResultsCollection)
+      await insertMockSurveyResultOnDatabase({ ...surveyResultParams }, surveyResultsCollection)
+      await insertMockSurveyResultOnDatabase(
+        { ...surveyResultParams, answer: secondUsedAnswer },
+        surveyResultsCollection,
+      )
+      await insertMockSurveyResultOnDatabase(
+        { ...surveyResultParams, answer: secondUsedAnswer },
+        surveyResultsCollection,
+      )
       const loadedSurveyResult = await sut.loadBySurveyId(surveyId)
       expect(loadedSurveyResult).toBeTruthy()
-      const [firstAnswer,secondAnswer] = loadedSurveyResult.answers
+      const [firstAnswer, secondAnswer] = loadedSurveyResult.answers
       expect(loadedSurveyResult.surveyId).toEqual(surveyId)
       expect(firstAnswer.answer).toBe(secondUsedAnswer)
       expect(firstAnswer.count).toBe(2)
@@ -111,7 +123,7 @@ describe('SurveyResultMongoRespository',() => {
       expect(secondAnswer.count).toBe(2)
       expect(secondAnswer.percent).toBe(50)
     })
-    test('should return null on LoadBySurveyId if there is no survey result related to surveyId',async () => {
+    test('should return null on LoadBySurveyId if there is no survey result related to surveyId', async () => {
       const survey = await insertMockSurveyOnDatabase(surveysCollection)
       const { id: surveyId } = survey
       const sut = makeSut()

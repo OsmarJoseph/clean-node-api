@@ -3,30 +3,30 @@ import { ServerError, UnauthorizedError } from '@/presentation/errors'
 
 export const badRequest = (error: Error): HttpResponse => ({
   statusCode: 400,
-  body: error
+  body: error,
 })
 
 export const forbidenRequest = (error: Error): HttpResponse => ({
   statusCode: 403,
-  body: error
+  body: error,
 })
 
 export const unauthorizedRequest = (): HttpResponse => ({
   statusCode: 401,
-  body: new UnauthorizedError()
+  body: new UnauthorizedError(),
 })
 
 export const serverErrorRequest = (error: Error): HttpResponse => ({
   statusCode: 500,
-  body: new ServerError(error.stack)
+  body: new ServerError(error.stack),
 })
 
 export const okRequest = (data: any): HttpResponse => ({
   statusCode: 200,
-  body: data
+  body: data,
 })
 
 export const noContentRequest = (): HttpResponse => ({
   statusCode: 204,
-  body: null
+  body: null,
 })

@@ -20,13 +20,13 @@ describe('Log Mongo Repository', () => {
     errorsCollection = await getErrorsCollection()
     await errorsCollection.deleteMany({})
   })
-  test('Should create an error log on success',async () => {
+  test('Should create an error log on success', async () => {
     const sut = makeSut()
     await sut.logError({ errorStack: faker.random.words() })
     const count = await errorsCollection.countDocuments()
     expect(count).toBe(1)
   })
-  test('Should return an error log',async () => {
+  test('Should return an error log', async () => {
     const sut = makeSut()
     const errorStack = faker.random.words()
     await sut.logError({ errorStack })

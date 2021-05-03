@@ -13,7 +13,7 @@ const makeSut = (): SutTypes => {
   const sut = new DbCheckSurveyById(checkSurveyByIdRepositorySpy)
   return {
     sut,
-    checkSurveyByIdRepositorySpy
+    checkSurveyByIdRepositorySpy,
   }
 }
 describe('DbCheckSurveyById', () => {

@@ -3,8 +3,8 @@ export const forbidenRequestComponent = {
   content: {
     'application/json': {
       schema: {
-        $ref: '#/schemas/errorSchema'
-      }
-    }
-  }
+        $ref: '#/schemas/errorSchema',
+      },
+    },
+  },
 }

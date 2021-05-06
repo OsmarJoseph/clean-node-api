@@ -2,7 +2,7 @@ export const surveyPath = {
   get: {
     security: [
       {
-        apiKeyAuthSchema: [],
+        apiKeyAuthSchema: [] as [],
       },
     ],
     tags: ['Enquete'],
@@ -34,7 +34,7 @@ export const surveyPath = {
     summary: 'API para criar uma enquete',
     security: [
       {
-        apiKeyAuthSchema: [],
+        apiKeyAuthSchema: [] as [],
       },
     ],
     requestBody: {
